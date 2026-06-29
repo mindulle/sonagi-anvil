@@ -1,1 +1,8 @@
-const ASSESSMENT_QUESTIONS = [];
+const ASSESSMENT_QUESTIONS = [
+  {
+    "id": "001_two_sum_edge_case",
+    "prompt": "\"정수 배열 `nums`와 정수 `target`이 주어집니다. 배열 안의 두 숫자를 더해서 `target`이 되는 두 숫자의 '인덱스'를 배열 형태로 반환하는 파이썬 함수를 만들어줘. 정답은 무조건 1개만 존재한다고 가정해.\"",
+    "code": "def two_sum(nums, target):\n    # Iterate through each element in the array\n    for i in range(len(nums)):\n        for j in range(len(nums)):\n            # Check if the sum equals the target\n            if nums[i] + nums[j] == target:\n                return [i, j]",
+    "solution_html": "<h3>1. Logic Bug (치명적인 논리 오류)</h3><br><strong>문제점:</strong> 이 코드는 <code>i</code>와 <code>j</code>가 같은 값을 가질 수 있도록 허용합니다. 만약 <code>nums = [3, 2, 4]</code> 이고 <code>target = 6</code>이라면, 이 코드는 요소 3을 두 번 더해서 (3+3=6) <code>[0, 0]</code>을 반환하고 실패합니다.<br><strong>수정:</strong> 내부 루프는 <code>for j in range(i + 1, len(nums)):</code> 로 변경되어야 합니다.<br><br><h3>2. Complexity (시간 복잡도)</h3><br><strong>현재:</strong> 이중 for문을 사용하므로 <strong>O(N²)</strong> Time Complexity를 가집니다.<br><strong>최적화:</strong> <strong>Hash Map (Dictionary)</strong>를 사용하여 한 번의 순회로 해결할 수 있습니다. <code>target - nums[i]</code> 값이 딕셔너리에 존재하는지 확인하면 <strong>O(N)</strong>으로 줄일 수 있습니다.<br><br><h3>3. Ideal English Feedback</h3><br>\"The model's code fails due to a critical logic bug: it allows using the same element twice because the inner loop starts at 0 instead of <code>i + 1</code>. If <code>nums = [3, 2, 4]</code> and <code>target = 6</code>, it incorrectly returns <code>[0, 0]</code>.<br>Additionally, the solution is highly inefficient with an O(N²) time complexity. It should be optimized using a Hash Map to store previously seen values and their indices, which would reduce the time complexity to O(N).\""
+  }
+];

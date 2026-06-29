@@ -9,24 +9,34 @@ def parse_markdown(filepath):
     with open(filepath, 'r', encoding='utf-8') as f:
         content = f.read()
 
-    # 정규식으로 섹션 파싱
-    prompt_match = re.search(r'# Prompt\n(.*?)\n# Buggy Code', content, re.DOTALL)
-    code_match = re.search(r'# Buggy Code\n```python\n(.*?)\n```\n# Solution', content, re.DOTALL)
-    solution_match = re.search(r'# Solution\n(.*?)$', content, re.DOTALL)
+    # 안전하게 섹션을 분리하는 방식으로 변경
+    prompt = ""
+    code = ""
+    solution = ""
 
-    if not (prompt_match and code_match and solution_match):
-        print(f"Skipping {filepath}: Invalid format")
+    if "# Prompt" in content and "# Buggy Code" in content:
+        prompt = content.split("# Prompt")[1].split("# Buggy Code")[0].strip()
+    
+    if "# Buggy Code" in content and "# Solution" in content:
+        code_section = content.split("# Buggy Code")[1].split("# Solution")[0].strip()
+        code_match = re.search(r'```(?:python|javascript)?\n(.*?)\n```', code_section, re.DOTALL)
+        code = code_match.group(1) if code_match else code_section
+        
+    if "# Solution" in content:
+        solution = content.split("# Solution")[1].strip()
+
+    if not prompt or not code or not solution:
+        print(f"Skipping {filepath}: Missing sections")
         return None
 
     return {
         "id": os.path.basename(filepath).replace('.md', ''),
-        "prompt": prompt_match.group(1).strip(),
-        "code": code_match.group(1).strip(),
-        "solution_html": markdown_to_html(solution_match.group(1).strip())
+        "prompt": prompt,
+        "code": code,
+        "solution_html": markdown_to_html(solution)
     }
 
 def markdown_to_html(text):
-    # 매우 단순한 마크다운 -> HTML 변환 (실제로는 markdown 라이브러리 권장)
     text = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', text)
     text = re.sub(r'`(.*?)`', r'<code>\1</code>', text)
     text = re.sub(r'### (.*?)\n', r'<h3>\1</h3>\n', text)
@@ -44,7 +54,6 @@ def main():
             if q:
                 questions.append(q)
 
-    # JS 변수로 저장 (프론트엔드에서 바로 로드 가능하게)
     with open(OUTPUT_FILE, 'w', encoding='utf-8') as f:
         f.write(f"const ASSESSMENT_QUESTIONS = {json.dumps(questions, ensure_ascii=False, indent=2)};")
     print(f"Built {len(questions)} questions into {OUTPUT_FILE}")
