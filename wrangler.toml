@@ -5,8 +5,7 @@ compatibility_date = "2024-06-29"
 pages_build_output_dir = "public"
 
 # [D1] 훈련 기록 저장용 Database 바인딩
-# 주의: 실제 배포 전 `wrangler d1 create anvil-records`로 DB를 생성하고 ID를 맵핑해야 합니다.
 [[d1_databases]]
 binding = "DB"
 database_name = "anvil-records"
-database_id = "YOUR_D1_DATABASE_ID_HERE"
+database_id = "00257268-799d-4cc8-a904-8f15f9ebd7ac"
