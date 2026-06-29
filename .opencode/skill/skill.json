@@ -1,0 +1,4 @@
+{
+  "name": "sonagi-anvil",
+  "description": "sonagi-anvil 프로젝트 (AI 코드 리뷰 훈련 플랫폼) 전용 에이전트 지침. main 브랜치 직접 푸시 금지(PR 강제), Serverless 아키텍처 제약사항, 마크다운 출제 형식 등을 정의합니다. 이 프로젝트 폴더 내에서 작업할 때 반드시 로드하세요."
+}
