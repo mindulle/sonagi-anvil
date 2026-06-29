@@ -3,13 +3,13 @@ import json
 import re
 
 CONTENT_DIR = "content"
-OUTPUT_FILE = "public/questions.js"
+OUTPUT_DIR = "public"
+OUTPUT_FILE = os.path.join(OUTPUT_DIR, "questions.js")
 
 def parse_markdown(filepath):
     with open(filepath, 'r', encoding='utf-8') as f:
         content = f.read()
 
-    # 안전하게 섹션을 분리하는 방식으로 변경
     prompt = ""
     code = ""
     solution = ""
@@ -26,7 +26,6 @@ def parse_markdown(filepath):
         solution = content.split("# Solution")[1].strip()
 
     if not prompt or not code or not solution:
-        print(f"Skipping {filepath}: Missing sections")
         return None
 
     return {
@@ -45,8 +44,11 @@ def markdown_to_html(text):
 
 def main():
     questions = []
-    if not os.path.exists(CONTENT_DIR):
-        os.makedirs(CONTENT_DIR)
+    if not os.path.exists(OUTPUT_DIR):
+        os.makedirs(OUTPUT_DIR)
+        
+    # src 폴더의 정적 파일들을 public으로 복사
+    os.system(f"cp src/index.html {OUTPUT_DIR}/ 2>/dev/null")
         
     for filename in os.listdir(CONTENT_DIR):
         if filename.endswith(".md"):
