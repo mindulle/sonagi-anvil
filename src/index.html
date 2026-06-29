@@ -115,7 +115,11 @@
         <div class="question"><label>Q1. Logic Bug / Edge Case</label><textarea id="q1"></textarea></div>
         <div class="question"><label>Q2. Complexity & Optimization</label><textarea id="q2"></textarea></div>
         <div class="question"><label>Q3. Final Feedback (English)</label><textarea id="q3"></textarea></div>
-        <div><button class="btn-submit" onclick="submitAssessment()">Submit & View Solution</button><div style="clear: both;"></div></div>
+        <div>
+            <span id="saveStatus" style="float:left; color: var(--success-color); font-weight: bold; display: none;">💾 Saved to Cloudflare D1!</span>
+            <button class="btn-submit" onclick="submitAssessment()">Submit & View Solution</button>
+            <div style="clear: both;"></div>
+        </div>
     </div>
 
     <div class="panel solution-panel" id="solutionPanel">
@@ -173,11 +177,15 @@
         document.getElementById('solutionHeader').style.color = "var(--danger-color)";
     }
 
-    function submitAssessment() {
+    async function submitAssessment() {
         if (isSubmitted) return;
         isSubmitted = true;
         clearInterval(timerInterval);
         
+        const q1Text = document.getElementById('q1').value;
+        const q2Text = document.getElementById('q2').value;
+        const q3Text = document.getElementById('q3').value;
+
         ['q1', 'q2', 'q3'].forEach(id => document.getElementById(id).disabled = true);
         
         const btn = document.querySelector('.btn-submit');
@@ -187,6 +195,33 @@
 
         document.getElementById('solutionPanel').classList.add('visible');
         window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+
+        // Save to Cloudflare D1 via API
+        try {
+            const payload = {
+                questionId: currentQuestion ? currentQuestion.id : "unknown",
+                timeRemaining: timeRemaining,
+                q1: q1Text,
+                q2: q2Text,
+                q3: q3Text
+            };
+            
+            const response = await fetch('/api/submit', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (response.ok) {
+                const statusSpan = document.getElementById('saveStatus');
+                statusSpan.style.display = "inline";
+                setTimeout(() => { statusSpan.style.display = "none"; }, 3000);
+            } else {
+                console.error("Failed to save to D1", await response.text());
+            }
+        } catch (error) {
+            console.error("Error saving to D1:", error);
+        }
     }
 
     // 초기화
