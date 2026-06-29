@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sonagi Anvil | AI Assessment Training</title>
+    <!-- questions.js 로드 -->
+    <script src="questions.js"></script>
+    <style>
+        :root {
+            --bg-color: #0d1117;
+            --panel-bg: #161b22;
+            --text-color: #c9d1d9;
+            --border-color: #30363d;
+            --accent-color: #1991B9;
+            --success-color: #238636;
+            --danger-color: #f85149;
+            --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: var(--font-family);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 1000px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            position: relative;
+        }
+
+        /* Timer Styles */
+        .timer-container {
+            position: sticky;
+            top: 20px;
+            z-index: 100;
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: -10px;
+        }
+
+        .timer-box {
+            background-color: #1a1025;
+            border: 1px solid #d2a8ff;
+            color: #d2a8ff;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-family: ui-monospace, monospace;
+            font-size: 16px;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+        }
+
+        .timer-box.warning {
+            background-color: #490202;
+            border-color: var(--danger-color);
+            color: #ff7b72;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+
+        .header { border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
+        .badge { background-color: #1f6feb; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; }
+        .panel { background-color: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 20px; }
+        h2 { margin-top: 0; font-size: 18px; color: #58a6ff; }
+        .prompt-box { background-color: #0d1117; border-left: 4px solid var(--accent-color); padding: 15px; margin-bottom: 20px; border-radius: 0 4px 4px 0; font-style: italic; }
+        pre { background-color: #0d1117; padding: 15px; border-radius: 6px; overflow-x: auto; border: 1px solid var(--border-color); font-family: ui-monospace, monospace; font-size: 14px; }
+        
+        .question { margin-bottom: 20px; }
+        .question label { display: block; margin-bottom: 8px; font-weight: 600; }
+        textarea { width: 100%; height: 100px; background-color: #0d1117; color: var(--text-color); border: 1px solid var(--border-color); border-radius: 6px; padding: 10px; font-family: inherit; resize: vertical; box-sizing: border-box; }
+        textarea:focus { outline: none; border-color: var(--accent-color); }
+
+        .btn-submit { background-color: var(--success-color); color: white; border: none; padding: 10px 20px; border-radius: 6px; font-size: 16px; font-weight: 600; cursor: pointer; float: right; }
+        .solution-panel { display: none; margin-top: 20px; border: 1px solid #d2a8ff; background-color: #1a1025; }
+        .solution-panel.visible { display: block; animation: fadeIn 0.5s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="timer-container">
+        <div class="timer-box" id="timerBox">⏱ Time Left: <span id="timeDisplay">20:00</span></div>
+    </div>
+
+    <div class="header">
+        <h1>Task: Evaluate AI Code Generation</h1>
+        <span class="badge">Coding Expert - Python</span>
+        <span id="questionId" style="float:right; color:#8b949e; font-size:12px;"></span>
+    </div>
+
+    <div class="panel">
+        <h2>1. User Prompt</h2>
+        <div class="prompt-box" id="displayPrompt">Loading...</div>
+    </div>
+
+    <div class="panel">
+        <h2>2. AI Response (Model A)</h2>
+        <pre><code id="displayCode">Loading...</code></pre>
+    </div>
+
+    <div class="panel">
+        <h2>3. Your Evaluation</h2>
+        <div class="question"><label>Q1. Logic Bug / Edge Case</label><textarea id="q1"></textarea></div>
+        <div class="question"><label>Q2. Complexity & Optimization</label><textarea id="q2"></textarea></div>
+        <div class="question"><label>Q3. Final Feedback (English)</label><textarea id="q3"></textarea></div>
+        <div><button class="btn-submit" onclick="submitAssessment()">Submit & View Solution</button><div style="clear: both;"></div></div>
+    </div>
+
+    <div class="panel solution-panel" id="solutionPanel">
+        <h2 id="solutionHeader">✅ Standard Solution & Rubric</h2>
+        <div id="displaySolution"></div>
+    </div>
+</div>
+
+<script>
+    // 1. 문제 로드 및 렌더링
+    let currentQuestion = null;
+    
+    function loadRandomQuestion() {
+        if (!typeof ASSESSMENT_QUESTIONS !== 'undefined' && ASSESSMENT_QUESTIONS.length > 0) {
+            const randomIndex = Math.floor(Math.random() * ASSESSMENT_QUESTIONS.length);
+            currentQuestion = ASSESSMENT_QUESTIONS[randomIndex];
+            
+            document.getElementById('questionId').innerText = "ID: " + currentQuestion.id;
+            document.getElementById('displayPrompt').innerText = currentQuestion.prompt;
+            document.getElementById('displayCode').innerText = currentQuestion.code;
+            document.getElementById('displaySolution').innerHTML = currentQuestion.solution_html;
+        } else {
+            document.getElementById('displayPrompt').innerText = "Error: No questions found. Run build.py first.";
+        }
+    }
+
+    // 2. 타이머 로직
+    const TIME_LIMIT_MINUTES = 20;
+    let timeRemaining = TIME_LIMIT_MINUTES * 60;
+    let timerInterval;
+    let isSubmitted = false;
+
+    function formatTime(seconds) {
+        const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+        const s = (seconds % 60).toString().padStart(2, '0');
+        return `${m}:${s}`;
+    }
+
+    function updateTimer() {
+        if (isSubmitted) return;
+        timeRemaining--;
+        document.getElementById('timeDisplay').innerText = formatTime(timeRemaining);
+
+        if (timeRemaining === 300) document.getElementById('timerBox').classList.add('warning');
+        if (timeRemaining <= 0) forceSubmit();
+    }
+
+    // 3. 제출 및 결과 공개
+    function forceSubmit() {
+        if (isSubmitted) return;
+        submitAssessment();
+        document.getElementById('timeDisplay').innerText = "00:00";
+        document.getElementById('timerBox').innerHTML = "🛑 TIME IS UP";
+        document.getElementById('solutionHeader').innerText = "🛑 TIME IS UP - Standard Solution";
+        document.getElementById('solutionHeader').style.color = "var(--danger-color)";
+    }
+
+    function submitAssessment() {
+        if (isSubmitted) return;
+        isSubmitted = true;
+        clearInterval(timerInterval);
+        
+        ['q1', 'q2', 'q3'].forEach(id => document.getElementById(id).disabled = true);
+        
+        const btn = document.querySelector('.btn-submit');
+        btn.disabled = true;
+        btn.innerText = "Evaluated";
+        btn.style.backgroundColor = "var(--border-color)";
+
+        document.getElementById('solutionPanel').classList.add('visible');
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }
+
+    // 초기화
+    window.onload = function() {
+        loadRandomQuestion();
+        document.getElementById('timeDisplay').innerText = formatTime(timeRemaining);
+        timerInterval = setInterval(updateTimer, 1000);
+    };
+</script>
+</body>
+</html>
