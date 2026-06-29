@@ -14,15 +14,17 @@ This project strictly adheres to the following rules to ensure a robust and main
    - **Evaluation Records**: Stored in Cloudflare D1 (Serverless SQLite) to track user progress and feedback history. State and data are strictly separated.
 3. **Vanilla UI (Ultra-Lightweight Frontend)**: Built with pure HTML/JS/CSS without heavy frameworks like React or Next.js, ensuring blazing fast load times (< 0.1s) to maximize training focus.
 
-## 🏗️ Architecture
+## ⚙️ Workflow: PR-Driven Question Authoring
 
-- **Data Pipeline**: Python script (`build.py`) parses Markdown files and compiles them into a static JSON/JS payload during the CI/CD build phase.
+To maintain high-quality training data and build a professional portfolio history, **direct commits to the `main` branch are strictly prohibited.** All new questions must be added via Pull Requests (PR).
+
+1. **Create a Branch**: `git checkout -b feature/add-binary-search-question`
+2. **Author the Question**: Create a new `.md` file in the `content/` directory following the required format (`# Prompt`, `# Buggy Code`, `# Solution`).
+3. **Submit a PR**: Use the provided PR template to document the **Intended Edge Cases** and performance bottlenecks you designed.
+4. **Merge & Auto-Deploy**: Once merged into `main`, Cloudflare Pages automatically rebuilds the static payload (`questions.js`) and deploys to production.
+
+## 🏗️ Architecture
+- **Data Pipeline**: Python script (`build.py`) parses Markdown files and compiles them into a static JSON/JS payload.
 - **Frontend**: Cloudflare Pages (Serving static HTML & compiled JS).
 - **Backend API**: Cloudflare Pages Functions (`functions/api/`).
 - **Database**: Cloudflare D1 (SQLite).
-
-## 🚀 How to Add a Training Scenario
-
-1. Create a new `.md` file in the `content/` directory.
-2. Follow the required sections: `# Prompt`, `# Buggy Code`, and `# Solution`.
-3. Commit and push. Cloudflare Pages will automatically rebuild and deploy the new training set.
