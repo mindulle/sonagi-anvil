@@ -19,3 +19,9 @@
 - `# Prompt`: 문제의 요구사항
 - `# Buggy Code`: `python` 또는 `javascript` 코드 블록 안에 엣지 케이스를 놓친 AI의 버그 코드
 - `# Solution`: 논리 버그, Big O 최적화, 영어 피드백 템플릿 포함
+
+## 🧪 DSA Training Pipeline (TDD)
+1. **Workspace**: 알고리즘 문제 풀이 및 실기 훈련은 반드시 `dsa_training/` 디렉토리 하위에서 진행하십시오.
+2. **TDD 강제**: 문제를 풀 때 로직 구현 파일(예: `two_sum.py`)과 테스트 파일(예: `test_two_sum.py`)을 함께 작성하십시오.
+3. **Local Validation**: 코드를 커밋하기 전, 반드시 로컬에서 `cd dsa_training && pytest`를 실행하여 모든 테스트가 통과(PASS)하는지 확인하십시오. 테스트를 통과하지 못한 코드는 PR을 생성할 수 없습니다.
+4. **CI/CD 연동**: PR을 생성하면 GitHub Actions를 통해 `DSA Pytest CI`가 자동으로 실행됩니다.
