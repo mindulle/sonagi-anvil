@@ -12,3 +12,7 @@ def test_two_sum_same_elements():
 
 def test_two_sum_no_solution():
     assert two_sum([1, 2, 3], 7) == []
+
+def test_two_sum_empty_or_none():
+    assert two_sum([], 9) == []
+    assert two_sum(None, 9) == []
