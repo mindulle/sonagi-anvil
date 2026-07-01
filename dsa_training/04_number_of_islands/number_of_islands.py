@@ -9,20 +9,23 @@ class Solution:
         if not grid:
             return 0
             
-        def dfs(i, j):
-            if i < 0 or i >= len(grid) or j < 0 or j >= len(grid[0]) or grid[i][j] == '0':
-                return
-            grid[i][j] = '0'
-            dfs(i+1, j)
-            dfs(i-1, j)
-            dfs(i, j+1)
-            dfs(i, j-1)
-            
         count = 0
-        for i in range(len(grid)):
-            for j in range(len(grid[0])):
+        rows, cols = len(grid), len(grid[0])
+        
+        for i in range(rows):
+            for j in range(cols):
                 if grid[i][j] == '1':
-                    dfs(i, j)
                     count += 1
+                    # Iterative DFS using a stack to avoid RecursionError
+                    stack = [(i, j)]
+                    grid[i][j] = '0' # mark as visited
                     
+                    while stack:
+                        r, c = stack.pop()
+                        for dr, dc in [(1, 0), (-1, 0), (0, 1), (0, -1)]:
+                            nr, nc = r + dr, c + dc
+                            if 0 <= nr < rows and 0 <= nc < cols and grid[nr][nc] == '1':
+                                stack.append((nr, nc))
+                                grid[nr][nc] = '0' # mark as visited early
+                                
         return count
