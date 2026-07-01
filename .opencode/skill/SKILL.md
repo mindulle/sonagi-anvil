@@ -19,3 +19,8 @@
 - `# Prompt`: 문제의 요구사항
 - `# Buggy Code`: `python` 또는 `javascript` 코드 블록 안에 엣지 케이스를 놓친 AI의 버그 코드
 - `# Solution`: 논리 버그, Big O 최적화, 영어 피드백 템플릿 포함
+
+## 💻 DSA Training (TDD Pipeline)
+1. **Directory**: `dsa_training/` 폴더 내에 LeetCode 스타일의 문제를 Python으로 작성합니다.
+2. **TDD Rule**: 문제를 풀 때는 반드시 `<문제명>.py` 파일과 `test_<문제명>.py`를 함께 작성하고, 에이전트 스스로 로컬에서 `pytest`를 실행하여 테스트 통과를 확인해야 합니다.
+3. **Merge Rule**: 작성한 코드는 PR을 통해서만 병합하며, GitHub Actions CI(`pytest.yml`)가 자동으로 정답을 채점합니다.
