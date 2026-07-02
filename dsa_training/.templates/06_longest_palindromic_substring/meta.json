@@ -1,0 +1,5 @@
+{
+  "title": "Longest Palindromic Substring",
+  "difficulty": "Medium",
+  "categories": ["String", "Two Pointers", "DP"]
+}
