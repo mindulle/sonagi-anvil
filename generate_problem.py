@@ -17,8 +17,10 @@ The output MUST be in the following strict JSON format, without any markdown for
   "folder_name": "snake_case_problem_name",
   "file_name": "snake_case_problem_name.py",
   "skeleton_code": "class Solution:\n    def ...",
-  "test_code": "import pytest\nfrom snake_case_problem_name import Solution\n..."
-}}
+  "test_code": "import pytest\nfrom snake_case_problem_name import Solution\n...",
+  "categories": ["Array", "Dynamic Programming"],
+  "difficulty": "Medium"
+}
 
 Requirements:
 1. skeleton_code: Contains the class/method definition and a docstring, with `# TODO: Implement` and `pass`.
@@ -88,6 +90,7 @@ def main():
     # Write Files
     py_path = os.path.join(target_dir, data['file_name'])
     test_path = os.path.join(target_dir, f"test_{data['file_name']}")
+    meta_path = os.path.join(target_dir, "meta.json")
     
     with open(py_path, "w") as f:
         f.write(data['skeleton_code'])
@@ -95,9 +98,16 @@ def main():
     with open(test_path, "w") as f:
         f.write(data['test_code'])
         
+    with open(meta_path, "w") as f:
+        json.dump({
+            "categories": data.get("categories", ["Unknown"]),
+            "difficulty": data.get("difficulty", "Unknown")
+        }, f, indent=2)
+        
     # Copy to templates
     os.system(f"cp {py_path} {os.path.join(template_dir, data['file_name'])}")
     os.system(f"cp {test_path} {os.path.join(template_dir, f'test_{data['file_name']}')}")
+    os.system(f"cp {meta_path} {os.path.join(template_dir, 'meta.json')}")
     
     print(f"✅ Successfully created '{folder_name}'!")
     print(f"📁 Logic file: {py_path}")
