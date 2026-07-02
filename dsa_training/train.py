@@ -11,7 +11,7 @@ from datetime import datetime, timezone
 
 DB_PATH = "metrics.db"
 STATE_FILE = ".training_state.json"
-DEFAULT_WEBHOOK_URL = "http://100.113.113.72/webhook/anvil-metrics"
+DEFAULT_WEBHOOK_URL = "http://100.113.113.72:5678/webhook/anvil-metrics"
 
 def init_db():
     conn = sqlite3.connect(DB_PATH)
