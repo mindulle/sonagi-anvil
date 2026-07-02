@@ -5,9 +5,13 @@ import time
 import json
 import sqlite3
 import subprocess
+import urllib.request
+import urllib.parse
+from datetime import datetime, timezone
 
 DB_PATH = "metrics.db"
 STATE_FILE = ".training_state.json"
+DEFAULT_WEBHOOK_URL = "http://100.113.113.72/webhook/anvil-metrics"
 
 def init_db():
     conn = sqlite3.connect(DB_PATH)
@@ -69,6 +73,24 @@ def submit():
               (problem_name, categories, difficulty, time_taken, passed))
     conn.commit()
     
+    # Send to n8n Webhook
+    webhook_url = os.environ.get("ANVIL_METRICS_WEBHOOK_URL", DEFAULT_WEBHOOK_URL)
+    try:
+        payload = {
+            "id": f"sub_{int(time.time())}",
+            "problemId": problem_name,
+            "categories": categories,
+            "difficulty": difficulty,
+            "timeTakenSeconds": time_taken,
+            "isPassed": passed,
+            "timestamp": datetime.now(timezone.utc).isoformat()
+        }
+        req = urllib.request.Request(webhook_url, data=json.dumps(payload).encode('utf-8'), headers={'Content-Type': 'application/json'})
+        urllib.request.urlopen(req, timeout=3)
+        print("🌐 n8n Webhook 연동 성공 (데이터 전송 완료)")
+    except Exception as e:
+        print(f"⚠️ n8n Webhook 연동 실패 (로컬 DB에만 저장되었습니다): {e}")
+
     # Clear state
     os.remove(STATE_FILE)
     
