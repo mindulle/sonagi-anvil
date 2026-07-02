@@ -45,3 +45,19 @@ pytest
 이 훈련장에서 반복하며 깨달은 본인의 약점은 반드시 `anki.sonagi.space` 에 플래시카드로 등록하세요.
 * `Number of Islands` → 큰 그리드에서는 재귀(Recursive DFS) 시 RecursionError 발생 위험! Stack을 쓴 Iterative DFS 사용.
 * `LRU Cache` → 직접 Doubly Linked List + Hash Map을 짜는 것보다, 실무와 파이썬 코테에서는 `collections.OrderedDict` (`move_to_end`, `popitem`)이 압도적으로 유리함.
+
+## 🚨 엣지 케이스(Edge Case) 치트시트 (유형별 암기법)
+어세스먼트나 코딩 인터뷰에서 코드 리뷰를 할 때, 코드를 한 줄씩 읽기 전에 **'입력 데이터의 유형'**만 보고 반사적으로 떠올려야 하는 엣지 케이스 패턴입니다. 이 치트시트를 통째로 Anki에 넣고 외우면 리뷰 속도와 정확도가 비약적으로 상승합니다.
+
+| 데이터 타입 | 반사적으로 테스트해봐야 할 엣지 케이스 (입력값) | 발생하기 쉬운 버그 / 에러 |
+| :--- | :--- | :--- |
+| **Array / String** | 빈 배열/문자열 (`[]`, `""`), Null (`None`) | `IndexError`, `NullPointerException` |
+| | 원소가 딱 1개일 때 (`[a]`, `"x"`) | 투 포인터 엇갈림, 루프 미실행 |
+| | 모든 원소가 동일할 때 (`[2,2,2,2]`, `"aaaa"`) | 무한 루프, Set 중복 제거로 인한 로직 파괴 |
+| | 이미 정렬됨 / 역순 정렬됨 (`[1,2,3]`, `[3,2,1]`) | QuickSort의 $O(n^2)$ 최악의 시간 복잡도 발생 |
+| **Integer / Math** | `0`, 음수 (`-1`) | `ZeroDivisionError`, 인덱스 뒤로가기 버그 |
+| | 시스템 최대/최소값 (`sys.maxsize`, `-sys.maxsize`) | `OverflowError` (파이썬 외 언어에서 특히 중요) |
+| **Graph / Tree** | 노드가 1개이거나 아예 없는(Root=None) 경우 | 초기화 에러, 무한 재귀 |
+| | 트리가 한쪽으로만 치우친 경우 (Linked List 형태) | 재귀 깊이 초과 (`RecursionError`) |
+| | 사이클(Cycle)이 존재하는 그래프 (A->B->C->A) | 무한 루프 (방문 처리 `visited` 누락 시) |
+| **기타 (동시성 등)**| 동일한 자원에 동시 접근 / 빈번한 I/O | `Race Condition`, 병목 현상, 데드락 |
