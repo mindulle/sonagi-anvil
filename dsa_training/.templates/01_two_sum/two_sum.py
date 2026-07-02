@@ -7,13 +7,5 @@ class Solution:
         You may assume that each input would have exactly one solution, and you may not use the same element twice.
         You can return the answer in any order.
         """
-        if not nums:
-            return []
-            
-        seen = {}
-        for i, num in enumerate(nums):
-            diff = target - num
-            if diff in seen:
-                return [seen[diff], i]
-            seen[num] = i
-        return []
+        # TODO: Implement your solution here
+        pass
