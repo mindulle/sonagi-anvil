@@ -1,5 +1,7 @@
 class Solution:
-    # TODO: Implement Kadane's Algorithm to find the maximum subarray sum.
-    # Ensure it works correctly when all elements in the array are negative.
     def maxSubArray(self, nums: list[int]) -> int:
-        pass
+        current_sum = max_sum = nums[0]
+        for num in nums[1:]:
+            current_sum = max(num, current_sum + num)
+            max_sum = max(max_sum, current_sum)
+        return max_sum

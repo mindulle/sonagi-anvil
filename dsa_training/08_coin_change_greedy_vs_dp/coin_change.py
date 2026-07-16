@@ -1,6 +1,9 @@
 class Solution:
-    # TODO: Find the minimum number of coins that make up the given amount.
-    # Assume coins = [1, 3, 4] and amount = 6.
-    # Greedy will return 3 (4+1+1), but DP will return 2 (3+3). Implement DP.
     def coinChange(self, coins: list[int], amount: int) -> int:
-        pass
+        dp = [float('inf')] * (amount + 1)
+        dp[0] = 0
+        for i in range(1, amount + 1):
+            for coin in coins:
+                if i - coin >= 0:
+                    dp[i] = min(dp[i], dp[i - coin] + 1)
+        return dp[amount] if dp[amount] != float('inf') else -1
