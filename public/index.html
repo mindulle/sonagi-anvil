@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="ko" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sonagi Anvil | Assessment Environment</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        dark: '#0e1116',
+                        panel: '#161b22',
+                        bordercolor: '#30363d',
+                        accent: '#1991B9'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- PrismJS for Syntax Highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+
+    <!-- Data -->
+    <script src="questions.js"></script>
+
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            background-color: #0e1116;
+            color: #c9d1d9;
+        }
+
+        /* Top Navbar */
+        .navbar {
+            height: 60px;
+            border-bottom: 1px solid #30363d;
+            background-color: #161b22;
+        }
+
+        /* Split Pane Layout */
+        .split-container {
+            display: flex;
+            height: calc(100vh - 60px);
+        }
+
+        .pane {
+            overflow-y: auto;
+            padding: 24px;
+        }
+
+        .pane-left {
+            width: 50%;
+            border-right: 1px solid #30363d;
+        }
+
+        .pane-right {
+            flex: 1;
+            background-color: #0e1116;
+        }
+
+        /* Resizer */
+        .resizer {
+            width: 5px;
+            cursor: col-resize;
+            background-color: transparent;
+            position: relative;
+            z-index: 10;
+            margin-left: -2px;
+            margin-right: -2px;
+        }
+        .resizer:hover, .resizer:active {
+            background-color: #1991B9;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0e1116; }
+        ::-webkit-scrollbar-thumb { background: #30363d; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #484f58; }
+
+        /* Form elements */
+        textarea {
+            background-color: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            color: #c9d1d9;
+            width: 100%;
+            padding: 12px;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 120px;
+            transition: border-color 0.2s;
+        }
+        textarea:focus {
+            outline: none;
+            border-color: #1f6feb;
+            box-shadow: 0 0 0 3px rgba(31, 111, 235, 0.3);
+        }
+
+        /* Timer pulse */
+        .timer-warning {
+            color: #ff7b72 !important;
+            border-color: #ff7b72 !important;
+            animation: pulse 1s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+    </style>
+</head>
+<body class="flex flex-col">
+
+    <!-- Top Navbar -->
+    <header class="navbar flex items-center justify-between px-6 shrink-0">
+        <div class="flex items-center gap-4">
+            <div class="font-bold text-xl tracking-tight text-white flex items-center gap-2">
+                <svg class="w-6 h-6 text-blue-500" fill="currentColor" viewBox="0 0 20 20"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                Sonagi Anvil
+            </div>
+            <span class="px-2.5 py-0.5 rounded text-xs font-semibold bg-blue-900 text-blue-100 border border-blue-700">
+                Coding Expert - Python
+            </span>
+        </div>
+        
+        <div class="flex items-center gap-6">
+            <div class="text-sm text-gray-400 font-mono" id="questionId">Loading Task...</div>
+            <div id="timerBox" class="flex items-center gap-2 border border-purple-500/50 bg-purple-900/20 text-purple-300 px-4 py-1.5 rounded-full font-mono text-sm font-bold shadow-lg">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <span id="timeDisplay">20:00</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <div class="split-container w-full">
+        
+        <!-- Left Pane: Prompt & Code -->
+        <div class="pane pane-left bg-panel" id="leftPane">
+            <div class="max-w-3xl mx-auto">
+                <h2 class="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3">1. User Instruction</h2>
+                <div class="bg-dark border-l-4 border-blue-500 p-5 rounded-r-lg mb-8 shadow-sm">
+                    <p id="displayPrompt" class="text-gray-300 leading-relaxed text-sm">Loading...</p>
+                </div>
+
+                <div class="flex items-center justify-between mb-3">
+                    <h2 class="text-sm font-semibold text-gray-400 uppercase tracking-wider">2. AI Response (Model A)</h2>
+                    <span class="text-xs bg-gray-800 text-gray-400 px-2 py-1 rounded">Python 3</span>
+                </div>
+                <div class="rounded-lg overflow-hidden border border-bordercolor shadow-sm">
+                    <pre class="!m-0 !bg-dark"><code id="displayCode" class="language-python">Loading...</code></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Draggable Resizer -->
+        <div class="resizer" id="resizer"></div>
+
+        <!-- Right Pane: Evaluation -->
+        <div class="pane pane-right" id="rightPane">
+            <div class="max-w-2xl mx-auto pb-10">
+                <h2 class="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-6">3. Evaluation Rubric</h2>
+                
+                <div class="space-y-6">
+                    <div>
+                        <label class="block mb-2 font-medium text-gray-200">Q1. Logic Bug / Edge Case Identification <span class="text-red-400">*</span></label>
+                        <p class="text-xs text-gray-400 mb-2">Identify any functional bugs, unhandled edge cases, or logical flaws.</p>
+                        <textarea id="q1" placeholder="Write your analysis here..."></textarea>
+                    </div>
+                    
+                    <div>
+                        <label class="block mb-2 font-medium text-gray-200">Q2. Code Complexity & Optimization</label>
+                        <p class="text-xs text-gray-400 mb-2">Analyze time/space complexity and suggest potential optimizations.</p>
+                        <textarea id="q2" placeholder="Time: O(?), Space: O(?) ..."></textarea>
+                    </div>
+
+                    <div>
+                        <label class="block mb-2 font-medium text-gray-200">Q3. Final Feedback (English) <span class="text-red-400">*</span></label>
+                        <p class="text-xs text-gray-400 mb-2">Write the direct feedback that will be sent to the model.</p>
+                        <textarea id="q3" placeholder="The generated code contains a critical bug..."></textarea>
+                    </div>
+
+                    <div class="flex items-center justify-between pt-4 border-t border-bordercolor mt-8">
+                        <span id="saveStatus" class="text-green-500 font-bold text-sm hidden flex items-center gap-1">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                            Saved to Cloudflare D1
+                        </span>
+                        <button id="submitBtn" onclick="submitAssessment()" class="ml-auto bg-blue-600 hover:bg-blue-500 text-white px-6 py-2.5 rounded-lg font-semibold shadow-lg transition-colors">
+                            Submit & View Solution
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Solution Panel (Hidden initially) -->
+                <div id="solutionPanel" class="mt-10 p-6 border border-purple-500/30 bg-purple-900/10 rounded-xl hidden">
+                    <h2 id="solutionHeader" class="text-lg font-bold text-purple-400 mb-4 flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        Standard Solution & Rubric
+                    </h2>
+                    <div id="displaySolution" class="prose prose-invert prose-sm max-w-none prose-pre:bg-dark prose-pre:border prose-pre:border-bordercolor">
+                        <!-- Solution content goes here -->
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+<script>
+    /* =========================================================================
+       Split Pane Resizer Logic
+       ========================================================================= */
+    const resizer = document.getElementById('resizer');
+    const leftPane = document.getElementById('leftPane');
+    let isResizing = false;
+
+    resizer.addEventListener('mousedown', (e) => {
+        isResizing = true;
+        document.body.style.cursor = 'col-resize';
+        leftPane.style.userSelect = 'none';
+        leftPane.style.pointerEvents = 'none';
+    });
+
+    document.addEventListener('mousemove', (e) => {
+        if (!isResizing) return;
+        let newWidth = (e.clientX / window.innerWidth) * 100;
+        if (newWidth < 20) newWidth = 20; // Min width 20%
+        if (newWidth > 80) newWidth = 80; // Max width 80%
+        leftPane.style.width = `${newWidth}%`;
+    });
+
+    document.addEventListener('mouseup', () => {
+        isResizing = false;
+        document.body.style.cursor = 'default';
+        leftPane.style.userSelect = 'auto';
+        leftPane.style.pointerEvents = 'auto';
+    });
+
+    /* =========================================================================
+       Data Loading & Highlighting
+       ========================================================================= */
+    let currentQuestion = null;
+    
+    function loadRandomQuestion() {
+        if (typeof ASSESSMENT_QUESTIONS !== 'undefined' && ASSESSMENT_QUESTIONS.length > 0) {
+            const randomIndex = Math.floor(Math.random() * ASSESSMENT_QUESTIONS.length);
+            currentQuestion = ASSESSMENT_QUESTIONS[randomIndex];
+            
+            document.getElementById('questionId').innerText = "Task ID: " + currentQuestion.id;
+            document.getElementById('displayPrompt').innerText = currentQuestion.prompt;
+            
+            const codeBlock = document.getElementById('displayCode');
+            codeBlock.textContent = currentQuestion.code;
+            Prism.highlightElement(codeBlock); // Apply syntax highlighting
+
+            document.getElementById('displaySolution').innerHTML = currentQuestion.solution_html;
+        } else {
+            document.getElementById('displayPrompt').innerText = "Error: No questions found. Run build.py first.";
+        }
+    }
+
+    /* =========================================================================
+       Timer Logic
+       ========================================================================= */
+    const TIME_LIMIT_MINUTES = 20;
+    let timeRemaining = TIME_LIMIT_MINUTES * 60;
+    let timerInterval;
+    let isSubmitted = false;
+
+    function formatTime(seconds) {
+        const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+        const s = (seconds % 60).toString().padStart(2, '0');
+        return `${m}:${s}`;
+    }
+
+    function updateTimer() {
+        if (isSubmitted) return;
+        timeRemaining--;
+        document.getElementById('timeDisplay').innerText = formatTime(timeRemaining);
+
+        if (timeRemaining === 300) {
+            document.getElementById('timerBox').classList.add('timer-warning');
+        }
+        if (timeRemaining <= 0) forceSubmit();
+    }
+
+    function forceSubmit() {
+        if (isSubmitted) return;
+        submitAssessment();
+        document.getElementById('timeDisplay').innerText = "00:00";
+        document.getElementById('timerBox').classList.add('text-red-400', 'border-red-500/50', 'bg-red-900/20');
+        document.getElementById('timerBox').classList.remove('timer-warning', 'text-purple-300');
+        document.getElementById('solutionHeader').innerHTML = "🛑 TIME IS UP - Standard Solution";
+        document.getElementById('solutionHeader').classList.add('text-red-400');
+    }
+
+    /* =========================================================================
+       Submission Logic
+       ========================================================================= */
+    async function submitAssessment() {
+        if (isSubmitted) return;
+        isSubmitted = true;
+        clearInterval(timerInterval);
+        
+        const q1Text = document.getElementById('q1').value;
+        const q2Text = document.getElementById('q2').value;
+        const q3Text = document.getElementById('q3').value;
+
+        ['q1', 'q2', 'q3'].forEach(id => {
+            const el = document.getElementById(id);
+            el.disabled = true;
+            el.classList.add('opacity-50', 'cursor-not-allowed');
+        });
+        
+        const btn = document.getElementById('submitBtn');
+        btn.disabled = true;
+        btn.innerText = "Evaluated";
+        btn.className = "ml-auto bg-gray-700 text-gray-400 px-6 py-2.5 rounded-lg font-semibold cursor-not-allowed";
+
+        const solutionPanel = document.getElementById('solutionPanel');
+        solutionPanel.classList.remove('hidden');
+        
+        // Highlight code inside the solution panel if any
+        solutionPanel.querySelectorAll('pre code').forEach((block) => {
+            Prism.highlightElement(block);
+        });
+
+        // Scroll right pane to bottom
+        const rightPane = document.getElementById('rightPane');
+        rightPane.scrollTo({ top: rightPane.scrollHeight, behavior: 'smooth' });
+
+        // Save to Cloudflare D1 via API
+        try {
+            const payload = {
+                questionId: currentQuestion ? currentQuestion.id : "unknown",
+                timeRemaining: timeRemaining,
+                q1: q1Text,
+                q2: q2Text,
+                q3: q3Text
+            };
+            
+            const response = await fetch('/api/submit', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (response.ok) {
+                const statusSpan = document.getElementById('saveStatus');
+                statusSpan.classList.remove('hidden');
+                setTimeout(() => { statusSpan.classList.add('hidden'); }, 3000);
+            } else {
+                console.error("Failed to save to D1", await response.text());
+            }
+        } catch (error) {
+            console.error("Error saving to D1:", error);
+        }
+    }
+
+    // Initialize
+    window.onload = function() {
+        loadRandomQuestion();
+        document.getElementById('timeDisplay').innerText = formatTime(timeRemaining);
+        timerInterval = setInterval(updateTimer, 1000);
+    };
+</script>
+</body>
+</html>
