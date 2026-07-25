@@ -37,9 +37,16 @@
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            height: 100vh;
             margin: 0;
-            overflow: hidden;
+            background-color: #0e1116;
+        }
+
+        /* Prevent body scroll on desktop, allow on mobile */
+        @media (min-width: 768px) {
+            body {
+                height: 100vh;
+                overflow: hidden;
+            }
         }
 
         /* Resizer */
@@ -111,97 +118,97 @@
 <body class="flex flex-col bg-lightbg text-gray-800 dark:bg-dark dark:text-gray-300 transition-colors duration-200">
 
     <!-- Top Navbar -->
-    <header class="h-[60px] border-b border-lightborder dark:border-bordercolor bg-lightpanel dark:bg-panel flex items-center justify-between px-6 shrink-0 transition-colors duration-200">
-        <div class="flex items-center gap-4">
-            <div class="font-bold text-xl tracking-tight text-gray-900 dark:text-white flex items-center gap-2">
-                <svg class="w-6 h-6 text-blue-500" fill="currentColor" viewBox="0 0 20 20"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+    <header class="md:h-[60px] border-b border-lightborder dark:border-bordercolor bg-lightpanel dark:bg-panel flex flex-col md:flex-row items-center justify-between px-4 md:px-6 py-3 md:py-0 shrink-0 gap-3 md:gap-0 transition-colors duration-200">
+        <div class="flex items-center gap-2 md:gap-4 w-full md:w-auto justify-between md:justify-start">
+            <div class="font-bold text-lg md:text-xl tracking-tight text-gray-900 dark:text-white flex items-center gap-2">
+                <svg class="w-5 h-5 md:w-6 md:h-6 text-blue-500" fill="currentColor" viewBox="0 0 20 20"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
                 Sonagi Anvil
             </div>
-            <span class="px-2.5 py-0.5 rounded text-xs font-semibold bg-blue-100 text-blue-800 border border-blue-200 dark:bg-blue-900 dark:text-blue-100 dark:border-blue-700">
-                Coding Expert - Python
+            <span class="px-2 py-0.5 rounded text-[10px] md:text-xs font-semibold bg-blue-100 text-blue-800 border border-blue-200 dark:bg-blue-900 dark:text-blue-100 dark:border-blue-700 whitespace-nowrap">
+                Python Expert
             </span>
         </div>
         
-        <div class="flex items-center gap-4">
+        <div class="flex items-center gap-3 md:gap-4 w-full md:w-auto justify-between md:justify-end">
             <!-- Theme Switcher -->
-            <select id="themeSelect" onchange="applyTheme(this.value)" class="text-sm bg-gray-100 border border-gray-300 text-gray-700 rounded-md py-1 px-2 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300">
-                <option value="system">💻 System</option>
-                <option value="light">☀️ Light</option>
-                <option value="dark">🌙 Dark</option>
+            <select id="themeSelect" onchange="applyTheme(this.value)" class="text-xs md:text-sm bg-gray-100 border border-gray-300 text-gray-700 rounded-md py-1 px-2 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300">
+                <option value="system">💻</option>
+                <option value="light">☀️</option>
+                <option value="dark">🌙</option>
             </select>
 
-            <div class="text-sm text-gray-500 dark:text-gray-400 font-mono" id="questionId">Loading Task...</div>
-            <div id="timerBox" class="flex items-center gap-2 border border-purple-300 bg-purple-50 text-purple-700 dark:border-purple-500/50 dark:bg-purple-900/20 dark:text-purple-300 px-4 py-1.5 rounded-full font-mono text-sm font-bold shadow-sm transition-colors duration-200">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <div class="text-xs md:text-sm text-gray-500 dark:text-gray-400 font-mono truncate max-w-[120px] md:max-w-none" id="questionId">Task...</div>
+            <div id="timerBox" class="flex items-center gap-1.5 md:gap-2 border border-purple-300 bg-purple-50 text-purple-700 dark:border-purple-500/50 dark:bg-purple-900/20 dark:text-purple-300 px-3 md:px-4 py-1 md:py-1.5 rounded-full font-mono text-xs md:text-sm font-bold shadow-sm transition-colors duration-200 shrink-0">
+                <svg class="w-3.5 h-3.5 md:w-4 md:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                 <span id="timeDisplay">20:00</span>
             </div>
         </div>
     </header>
 
     <!-- Main Workspace -->
-    <div class="flex h-[calc(100vh-60px)] w-full">
+    <div class="flex flex-col md:flex-row md:h-[calc(100vh-60px)] w-full">
         
         <!-- Left Pane: Prompt & Code -->
-        <div class="overflow-y-auto p-6 w-1/2 border-r border-lightborder dark:border-bordercolor bg-lightpanel dark:bg-panel transition-colors duration-200" id="leftPane">
+        <div class="w-full md:w-1/2 md:overflow-y-auto p-4 md:p-6 border-b md:border-b-0 md:border-r border-lightborder dark:border-bordercolor bg-lightpanel dark:bg-panel transition-colors duration-200" id="leftPane">
             <div class="max-w-3xl mx-auto">
-                <h2 class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">1. User Instruction</h2>
-                <div class="bg-gray-50 border-l-4 border-blue-500 p-5 rounded-r-lg mb-8 shadow-sm dark:bg-dark transition-colors duration-200">
+                <h2 class="text-xs md:text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2 md:mb-3">1. User Instruction</h2>
+                <div class="bg-gray-50 border-l-4 border-blue-500 p-4 md:p-5 rounded-r-lg mb-6 md:mb-8 shadow-sm dark:bg-dark transition-colors duration-200">
                     <p id="displayPrompt" class="text-gray-700 dark:text-gray-300 leading-relaxed text-sm">Loading...</p>
                 </div>
 
-                <div class="flex items-center justify-between mb-3">
-                    <h2 class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">2. AI Response (Model A)</h2>
-                    <span class="text-xs bg-gray-200 text-gray-600 px-2 py-1 rounded dark:bg-gray-800 dark:text-gray-400">Python 3</span>
+                <div class="flex items-center justify-between mb-2 md:mb-3">
+                    <h2 class="text-xs md:text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">2. AI Response (Model A)</h2>
+                    <span class="text-[10px] md:text-xs bg-gray-200 text-gray-600 px-2 py-1 rounded dark:bg-gray-800 dark:text-gray-400">Python 3</span>
                 </div>
                 <div class="rounded-lg overflow-hidden border border-lightborder dark:border-bordercolor shadow-sm transition-colors duration-200">
-                    <pre class="!m-0 !bg-gray-50 dark:!bg-dark transition-colors duration-200"><code id="displayCode" class="language-python">Loading...</code></pre>
+                    <pre class="!m-0 !bg-gray-50 dark:!bg-dark transition-colors duration-200 text-xs md:text-sm"><code id="displayCode" class="language-python">Loading...</code></pre>
                 </div>
             </div>
         </div>
 
-        <!-- Draggable Resizer -->
-        <div class="resizer" id="resizer"></div>
+        <!-- Draggable Resizer (Desktop Only) -->
+        <div class="resizer hidden md:block" id="resizer"></div>
 
         <!-- Right Pane: Evaluation -->
-        <div class="flex-1 overflow-y-auto p-6 bg-lightbg dark:bg-dark transition-colors duration-200" id="rightPane">
+        <div class="w-full md:flex-1 md:overflow-y-auto p-4 md:p-6 bg-lightbg dark:bg-dark transition-colors duration-200" id="rightPane">
             <div class="max-w-2xl mx-auto pb-10">
-                <h2 class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-6">3. Evaluation Rubric</h2>
+                <h2 class="text-xs md:text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-4 md:mb-6">3. Evaluation Rubric</h2>
                 
-                <div class="space-y-6">
+                <div class="space-y-4 md:space-y-6">
                     <div>
-                        <label class="block mb-2 font-medium text-gray-700 dark:text-gray-200">Q1. Logic Bug / Edge Case Identification <span class="text-red-500 dark:text-red-400">*</span></label>
-                        <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">Identify any functional bugs, unhandled edge cases, or logical flaws.</p>
-                        <textarea id="q1" placeholder="Write your analysis here..."></textarea>
+                        <label class="block mb-1.5 md:mb-2 text-sm md:text-base font-medium text-gray-700 dark:text-gray-200">Q1. Logic Bug / Edge Case <span class="text-red-500 dark:text-red-400">*</span></label>
+                        <p class="text-[10px] md:text-xs text-gray-500 dark:text-gray-400 mb-2">Identify functional bugs or logical flaws.</p>
+                        <textarea id="q1" placeholder="Write your analysis here..." class="text-sm"></textarea>
                     </div>
                     
                     <div>
-                        <label class="block mb-2 font-medium text-gray-700 dark:text-gray-200">Q2. Code Complexity & Optimization</label>
-                        <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">Analyze time/space complexity and suggest potential optimizations.</p>
-                        <textarea id="q2" placeholder="Time: O(?), Space: O(?) ..."></textarea>
+                        <label class="block mb-1.5 md:mb-2 text-sm md:text-base font-medium text-gray-700 dark:text-gray-200">Q2. Code Complexity</label>
+                        <p class="text-[10px] md:text-xs text-gray-500 dark:text-gray-400 mb-2">Analyze time/space complexity.</p>
+                        <textarea id="q2" placeholder="Time: O(?), Space: O(?) ..." class="text-sm"></textarea>
                     </div>
 
                     <div>
-                        <label class="block mb-2 font-medium text-gray-700 dark:text-gray-200">Q3. Final Feedback (English) <span class="text-red-500 dark:text-red-400">*</span></label>
-                        <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">Write the direct feedback that will be sent to the model.</p>
-                        <textarea id="q3" placeholder="The generated code contains a critical bug..."></textarea>
+                        <label class="block mb-1.5 md:mb-2 text-sm md:text-base font-medium text-gray-700 dark:text-gray-200">Q3. Final Feedback (English) <span class="text-red-500 dark:text-red-400">*</span></label>
+                        <p class="text-[10px] md:text-xs text-gray-500 dark:text-gray-400 mb-2">Write the direct feedback.</p>
+                        <textarea id="q3" placeholder="The generated code contains a critical bug..." class="text-sm"></textarea>
                     </div>
 
-                    <div class="flex items-center justify-between pt-4 border-t border-lightborder dark:border-bordercolor mt-8 transition-colors duration-200">
+                    <div class="flex flex-col sm:flex-row items-center justify-between pt-4 border-t border-lightborder dark:border-bordercolor mt-6 md:mt-8 gap-4 transition-colors duration-200">
                         <span id="saveStatus" class="text-green-600 dark:text-green-500 font-bold text-sm hidden flex items-center gap-1">
                             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
-                            Saved to Cloudflare D1
+                            Saved to D1
                         </span>
-                        <button id="submitBtn" onclick="submitAssessment()" class="ml-auto bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg font-semibold shadow-md transition-colors">
+                        <button id="submitBtn" onclick="submitAssessment()" class="w-full sm:w-auto ml-auto bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 md:py-2.5 rounded-lg font-semibold shadow-md transition-colors text-sm md:text-base">
                             Submit & View Solution
                         </button>
                     </div>
                 </div>
 
                 <!-- Solution Panel (Hidden initially) -->
-                <div id="solutionPanel" class="mt-10 p-6 border border-purple-200 bg-purple-50 rounded-xl dark:border-purple-500/30 dark:bg-purple-900/10 hidden transition-colors duration-200">
-                    <h2 id="solutionHeader" class="text-lg font-bold text-purple-700 dark:text-purple-400 mb-4 flex items-center gap-2">
+                <div id="solutionPanel" class="mt-8 md:mt-10 p-4 md:p-6 border border-purple-200 bg-purple-50 rounded-xl dark:border-purple-500/30 dark:bg-purple-900/10 hidden transition-colors duration-200">
+                    <h2 id="solutionHeader" class="text-base md:text-lg font-bold text-purple-700 dark:text-purple-400 mb-3 md:mb-4 flex items-center gap-2">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                        Standard Solution & Rubric
+                        Standard Solution
                     </h2>
                     <div id="displaySolution" class="prose prose-sm max-w-none dark:prose-invert prose-pre:bg-gray-50 dark:prose-pre:bg-dark prose-pre:border prose-pre:border-lightborder dark:prose-pre:border-bordercolor transition-colors duration-200">
                         <!-- Solution content goes here -->
@@ -251,11 +258,9 @@
         themeSelect.value = theme;
     }
 
-    // Init Theme
     const savedTheme = localStorage.getItem('theme') || 'system';
     applyTheme(savedTheme);
 
-    // Watch for system theme changes if set to 'system'
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
         if (!localStorage.getItem('theme')) {
             applyTheme('system');
@@ -263,13 +268,15 @@
     });
 
     /* =========================================================================
-       Split Pane Resizer Logic
+       Split Pane Resizer Logic (Desktop Only)
        ========================================================================= */
     const resizer = document.getElementById('resizer');
     const leftPane = document.getElementById('leftPane');
     let isResizing = false;
 
     resizer.addEventListener('mousedown', (e) => {
+        // Only allow resize on desktop (>= 768px)
+        if (window.innerWidth < 768) return;
         isResizing = true;
         document.body.style.cursor = 'col-resize';
         leftPane.style.userSelect = 'none';
@@ -285,10 +292,22 @@
     });
 
     document.addEventListener('mouseup', () => {
+        if (!isResizing) return;
         isResizing = false;
         document.body.style.cursor = 'default';
         leftPane.style.userSelect = 'auto';
         leftPane.style.pointerEvents = 'auto';
+    });
+
+    // Reset pane width on resize if switching to mobile
+    window.addEventListener('resize', () => {
+        if (window.innerWidth < 768) {
+            leftPane.style.width = '100%';
+        } else {
+            if (leftPane.style.width === '100%') {
+                leftPane.style.width = '50%';
+            }
+        }
     });
 
     /* =========================================================================
@@ -301,7 +320,13 @@
             const randomIndex = Math.floor(Math.random() * ASSESSMENT_QUESTIONS.length);
             currentQuestion = ASSESSMENT_QUESTIONS[randomIndex];
             
-            document.getElementById('questionId').innerText = "Task ID: " + currentQuestion.id;
+            // Format ID for smaller screens
+            let displayId = currentQuestion.id;
+            if (window.innerWidth < 768 && displayId.length > 10) {
+                displayId = displayId.substring(0, 10) + '...';
+            }
+            
+            document.getElementById('questionId').innerText = "ID: " + displayId;
             document.getElementById('displayPrompt').innerText = currentQuestion.prompt;
             
             const codeBlock = document.getElementById('displayCode');
@@ -345,7 +370,7 @@
         document.getElementById('timeDisplay').innerText = "00:00";
         const timerBox = document.getElementById('timerBox');
         timerBox.className = "flex items-center gap-2 border border-red-400 bg-red-50 text-red-600 dark:border-red-500/50 dark:bg-red-900/20 dark:text-red-400 px-4 py-1.5 rounded-full font-mono text-sm font-bold shadow-sm";
-        document.getElementById('solutionHeader').innerHTML = "🛑 TIME IS UP - Standard Solution";
+        document.getElementById('solutionHeader').innerHTML = "🛑 TIME IS UP";
         document.getElementById('solutionHeader').classList.add('text-red-600', 'dark:text-red-400');
         document.getElementById('solutionHeader').classList.remove('text-purple-700', 'dark:text-purple-400');
     }
@@ -371,18 +396,22 @@
         const btn = document.getElementById('submitBtn');
         btn.disabled = true;
         btn.innerText = "Evaluated";
-        btn.className = "ml-auto bg-gray-300 text-gray-500 dark:bg-gray-700 dark:text-gray-400 px-6 py-2.5 rounded-lg font-semibold cursor-not-allowed transition-colors duration-200";
+        btn.className = "w-full sm:w-auto ml-auto bg-gray-300 text-gray-500 dark:bg-gray-700 dark:text-gray-400 px-6 py-3 md:py-2.5 rounded-lg font-semibold cursor-not-allowed transition-colors duration-200 text-sm md:text-base";
 
         const solutionPanel = document.getElementById('solutionPanel');
         solutionPanel.classList.remove('hidden');
         
-        // Highlight code inside the solution panel if any
         solutionPanel.querySelectorAll('pre code').forEach((block) => {
             Prism.highlightElement(block);
         });
 
-        const rightPane = document.getElementById('rightPane');
-        rightPane.scrollTo({ top: rightPane.scrollHeight, behavior: 'smooth' });
+        // Scroll to solution
+        if (window.innerWidth < 768) {
+            solutionPanel.scrollIntoView({ behavior: 'smooth' });
+        } else {
+            const rightPane = document.getElementById('rightPane');
+            rightPane.scrollTo({ top: rightPane.scrollHeight, behavior: 'smooth' });
+        }
 
         try {
             const payload = {
