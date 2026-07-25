@@ -1,152 +1,322 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sonagi Anvil | AI Assessment Training</title>
-    <!-- questions.js 로드 -->
+    <title>Sonagi Anvil | Assessment Environment</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        dark: '#0e1116',
+                        panel: '#161b22',
+                        bordercolor: '#30363d',
+                        accent: '#1991B9',
+                        lightbg: '#f6f8fa',
+                        lightpanel: '#ffffff',
+                        lightborder: '#d0d7de'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- PrismJS for Syntax Highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" id="prism-theme" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+
+    <!-- Data -->
     <script src="questions.js"></script>
+
     <style>
-        :root {
-            --bg-color: #0d1117;
-            --panel-bg: #161b22;
-            --text-color: #c9d1d9;
-            --border-color: #30363d;
-            --accent-color: #1991B9;
-            --success-color: #238636;
-            --danger-color: #f85149;
-            --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-        }
-
         body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            font-family: var(--font-family);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            height: 100vh;
             margin: 0;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
+            overflow: hidden;
         }
 
-        .container {
-            max-width: 1000px;
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
+        /* Resizer */
+        .resizer {
+            width: 5px;
+            cursor: col-resize;
+            background-color: transparent;
             position: relative;
+            z-index: 10;
+            margin-left: -2px;
+            margin-right: -2px;
+            transition: background-color 0.2s;
+        }
+        .resizer:hover, .resizer:active {
+            background-color: #1991B9;
         }
 
-        /* Timer Styles */
-        .timer-container {
-            position: sticky;
-            top: 20px;
-            z-index: 100;
-            display: flex;
-            justify-content: flex-end;
-            margin-bottom: -10px;
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        .dark ::-webkit-scrollbar-track { background: #0e1116; }
+        .dark ::-webkit-scrollbar-thumb { background: #30363d; border-radius: 4px; }
+        .dark ::-webkit-scrollbar-thumb:hover { background: #484f58; }
+        
+        :not(.dark) ::-webkit-scrollbar-track { background: #f6f8fa; }
+        :not(.dark) ::-webkit-scrollbar-thumb { background: #c1c9d2; border-radius: 4px; }
+        :not(.dark) ::-webkit-scrollbar-thumb:hover { background: #a8b3cf; }
+
+        /* Form elements */
+        textarea {
+            width: 100%;
+            padding: 12px;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 120px;
+            transition: border-color 0.2s, background-color 0.2s, color 0.2s;
+            outline: none;
+            border-radius: 6px;
+            border-width: 1px;
+        }
+        .dark textarea {
+            background-color: #0d1117;
+            border-color: #30363d;
+            color: #c9d1d9;
+        }
+        :not(.dark) textarea {
+            background-color: #f6f8fa;
+            border-color: #d0d7de;
+            color: #24292f;
+        }
+        textarea:focus {
+            border-color: #1f6feb;
+            box-shadow: 0 0 0 3px rgba(31, 111, 235, 0.3);
         }
 
-        .timer-box {
-            background-color: #1a1025;
-            border: 1px solid #d2a8ff;
-            color: #d2a8ff;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-family: ui-monospace, monospace;
-            font-size: 16px;
-            font-weight: bold;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-            transition: all 0.3s ease;
-        }
-
-        .timer-box.warning {
-            background-color: #490202;
-            border-color: var(--danger-color);
-            color: #ff7b72;
+        /* Timer pulse */
+        .timer-warning {
+            color: #ff7b72 !important;
+            border-color: #ff7b72 !important;
+            background-color: rgba(255, 123, 114, 0.1) !important;
             animation: pulse 1s infinite;
         }
-
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
-
-        .header { border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
-        .badge { background-color: #1f6feb; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; }
-        .panel { background-color: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 20px; }
-        h2 { margin-top: 0; font-size: 18px; color: #58a6ff; }
-        .prompt-box { background-color: #0d1117; border-left: 4px solid var(--accent-color); padding: 15px; margin-bottom: 20px; border-radius: 0 4px 4px 0; font-style: italic; }
-        pre { background-color: #0d1117; padding: 15px; border-radius: 6px; overflow-x: auto; border: 1px solid var(--border-color); font-family: ui-monospace, monospace; font-size: 14px; }
-        
-        .question { margin-bottom: 20px; }
-        .question label { display: block; margin-bottom: 8px; font-weight: 600; }
-        textarea { width: 100%; height: 100px; background-color: #0d1117; color: var(--text-color); border: 1px solid var(--border-color); border-radius: 6px; padding: 10px; font-family: inherit; resize: vertical; box-sizing: border-box; }
-        textarea:focus { outline: none; border-color: var(--accent-color); }
-
-        .btn-submit { background-color: var(--success-color); color: white; border: none; padding: 10px 20px; border-radius: 6px; font-size: 16px; font-weight: 600; cursor: pointer; float: right; }
-        .solution-panel { display: none; margin-top: 20px; border: 1px solid #d2a8ff; background-color: #1a1025; }
-        .solution-panel.visible { display: block; animation: fadeIn 0.5s ease-in; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
     </style>
 </head>
-<body>
+<body class="flex flex-col bg-lightbg text-gray-800 dark:bg-dark dark:text-gray-300 transition-colors duration-200">
 
-<div class="container">
-    <div class="timer-container">
-        <div class="timer-box" id="timerBox">⏱ Time Left: <span id="timeDisplay">20:00</span></div>
-    </div>
+    <!-- Top Navbar -->
+    <header class="h-[60px] border-b border-lightborder dark:border-bordercolor bg-lightpanel dark:bg-panel flex items-center justify-between px-6 shrink-0 transition-colors duration-200">
+        <div class="flex items-center gap-4">
+            <div class="font-bold text-xl tracking-tight text-gray-900 dark:text-white flex items-center gap-2">
+                <svg class="w-6 h-6 text-blue-500" fill="currentColor" viewBox="0 0 20 20"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                Sonagi Anvil
+            </div>
+            <span class="px-2.5 py-0.5 rounded text-xs font-semibold bg-blue-100 text-blue-800 border border-blue-200 dark:bg-blue-900 dark:text-blue-100 dark:border-blue-700">
+                Coding Expert - Python
+            </span>
+        </div>
+        
+        <div class="flex items-center gap-4">
+            <!-- Theme Switcher -->
+            <select id="themeSelect" onchange="applyTheme(this.value)" class="text-sm bg-gray-100 border border-gray-300 text-gray-700 rounded-md py-1 px-2 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300">
+                <option value="system">💻 System</option>
+                <option value="light">☀️ Light</option>
+                <option value="dark">🌙 Dark</option>
+            </select>
 
-    <div class="header">
-        <h1>Task: Evaluate AI Code Generation</h1>
-        <span class="badge">Coding Expert - Python</span>
-        <span id="questionId" style="float:right; color:#8b949e; font-size:12px;"></span>
-    </div>
+            <div class="text-sm text-gray-500 dark:text-gray-400 font-mono" id="questionId">Loading Task...</div>
+            <div id="timerBox" class="flex items-center gap-2 border border-purple-300 bg-purple-50 text-purple-700 dark:border-purple-500/50 dark:bg-purple-900/20 dark:text-purple-300 px-4 py-1.5 rounded-full font-mono text-sm font-bold shadow-sm transition-colors duration-200">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <span id="timeDisplay">20:00</span>
+            </div>
+        </div>
+    </header>
 
-    <div class="panel">
-        <h2>1. User Prompt</h2>
-        <div class="prompt-box" id="displayPrompt">Loading...</div>
-    </div>
+    <!-- Main Workspace -->
+    <div class="flex h-[calc(100vh-60px)] w-full">
+        
+        <!-- Left Pane: Prompt & Code -->
+        <div class="overflow-y-auto p-6 w-1/2 border-r border-lightborder dark:border-bordercolor bg-lightpanel dark:bg-panel transition-colors duration-200" id="leftPane">
+            <div class="max-w-3xl mx-auto">
+                <h2 class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">1. User Instruction</h2>
+                <div class="bg-gray-50 border-l-4 border-blue-500 p-5 rounded-r-lg mb-8 shadow-sm dark:bg-dark transition-colors duration-200">
+                    <p id="displayPrompt" class="text-gray-700 dark:text-gray-300 leading-relaxed text-sm">Loading...</p>
+                </div>
 
-    <div class="panel">
-        <h2>2. AI Response (Model A)</h2>
-        <pre><code id="displayCode">Loading...</code></pre>
-    </div>
+                <div class="flex items-center justify-between mb-3">
+                    <h2 class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">2. AI Response (Model A)</h2>
+                    <span class="text-xs bg-gray-200 text-gray-600 px-2 py-1 rounded dark:bg-gray-800 dark:text-gray-400">Python 3</span>
+                </div>
+                <div class="rounded-lg overflow-hidden border border-lightborder dark:border-bordercolor shadow-sm transition-colors duration-200">
+                    <pre class="!m-0 !bg-gray-50 dark:!bg-dark transition-colors duration-200"><code id="displayCode" class="language-python">Loading...</code></pre>
+                </div>
+            </div>
+        </div>
 
-    <div class="panel">
-        <h2>3. Your Evaluation</h2>
-        <div class="question"><label>Q1. Logic Bug / Edge Case</label><textarea id="q1"></textarea></div>
-        <div class="question"><label>Q2. Complexity & Optimization</label><textarea id="q2"></textarea></div>
-        <div class="question"><label>Q3. Final Feedback (English)</label><textarea id="q3"></textarea></div>
-        <div>
-            <span id="saveStatus" style="float:left; color: var(--success-color); font-weight: bold; display: none;">💾 Saved to Cloudflare D1!</span>
-            <button class="btn-submit" onclick="submitAssessment()">Submit & View Solution</button>
-            <div style="clear: both;"></div>
+        <!-- Draggable Resizer -->
+        <div class="resizer" id="resizer"></div>
+
+        <!-- Right Pane: Evaluation -->
+        <div class="flex-1 overflow-y-auto p-6 bg-lightbg dark:bg-dark transition-colors duration-200" id="rightPane">
+            <div class="max-w-2xl mx-auto pb-10">
+                <h2 class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-6">3. Evaluation Rubric</h2>
+                
+                <div class="space-y-6">
+                    <div>
+                        <label class="block mb-2 font-medium text-gray-700 dark:text-gray-200">Q1. Logic Bug / Edge Case Identification <span class="text-red-500 dark:text-red-400">*</span></label>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">Identify any functional bugs, unhandled edge cases, or logical flaws.</p>
+                        <textarea id="q1" placeholder="Write your analysis here..."></textarea>
+                    </div>
+                    
+                    <div>
+                        <label class="block mb-2 font-medium text-gray-700 dark:text-gray-200">Q2. Code Complexity & Optimization</label>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">Analyze time/space complexity and suggest potential optimizations.</p>
+                        <textarea id="q2" placeholder="Time: O(?), Space: O(?) ..."></textarea>
+                    </div>
+
+                    <div>
+                        <label class="block mb-2 font-medium text-gray-700 dark:text-gray-200">Q3. Final Feedback (English) <span class="text-red-500 dark:text-red-400">*</span></label>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">Write the direct feedback that will be sent to the model.</p>
+                        <textarea id="q3" placeholder="The generated code contains a critical bug..."></textarea>
+                    </div>
+
+                    <div class="flex items-center justify-between pt-4 border-t border-lightborder dark:border-bordercolor mt-8 transition-colors duration-200">
+                        <span id="saveStatus" class="text-green-600 dark:text-green-500 font-bold text-sm hidden flex items-center gap-1">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                            Saved to Cloudflare D1
+                        </span>
+                        <button id="submitBtn" onclick="submitAssessment()" class="ml-auto bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg font-semibold shadow-md transition-colors">
+                            Submit & View Solution
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Solution Panel (Hidden initially) -->
+                <div id="solutionPanel" class="mt-10 p-6 border border-purple-200 bg-purple-50 rounded-xl dark:border-purple-500/30 dark:bg-purple-900/10 hidden transition-colors duration-200">
+                    <h2 id="solutionHeader" class="text-lg font-bold text-purple-700 dark:text-purple-400 mb-4 flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        Standard Solution & Rubric
+                    </h2>
+                    <div id="displaySolution" class="prose prose-sm max-w-none dark:prose-invert prose-pre:bg-gray-50 dark:prose-pre:bg-dark prose-pre:border prose-pre:border-lightborder dark:prose-pre:border-bordercolor transition-colors duration-200">
+                        <!-- Solution content goes here -->
+                    </div>
+                </div>
+
+            </div>
         </div>
     </div>
 
-    <div class="panel solution-panel" id="solutionPanel">
-        <h2 id="solutionHeader">✅ Standard Solution & Rubric</h2>
-        <div id="displaySolution"></div>
-    </div>
-</div>
-
 <script>
-    // 1. 문제 로드 및 렌더링
+    /* =========================================================================
+       Theme Switcher Logic
+       ========================================================================= */
+    const themeSelect = document.getElementById('themeSelect');
+    const htmlEl = document.documentElement;
+    const prismThemeLink = document.getElementById('prism-theme');
+
+    function updatePrismTheme(isDark) {
+        if (isDark) {
+            prismThemeLink.href = "https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css";
+        } else {
+            prismThemeLink.href = "https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css";
+        }
+    }
+
+    function applyTheme(theme) {
+        let isDark = false;
+        if (theme === 'system') {
+            isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            localStorage.removeItem('theme');
+        } else if (theme === 'dark') {
+            isDark = true;
+            localStorage.setItem('theme', 'dark');
+        } else {
+            isDark = false;
+            localStorage.setItem('theme', 'light');
+        }
+
+        if (isDark) {
+            htmlEl.classList.add('dark');
+        } else {
+            htmlEl.classList.remove('dark');
+        }
+        
+        updatePrismTheme(isDark);
+        themeSelect.value = theme;
+    }
+
+    // Init Theme
+    const savedTheme = localStorage.getItem('theme') || 'system';
+    applyTheme(savedTheme);
+
+    // Watch for system theme changes if set to 'system'
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+        if (!localStorage.getItem('theme')) {
+            applyTheme('system');
+        }
+    });
+
+    /* =========================================================================
+       Split Pane Resizer Logic
+       ========================================================================= */
+    const resizer = document.getElementById('resizer');
+    const leftPane = document.getElementById('leftPane');
+    let isResizing = false;
+
+    resizer.addEventListener('mousedown', (e) => {
+        isResizing = true;
+        document.body.style.cursor = 'col-resize';
+        leftPane.style.userSelect = 'none';
+        leftPane.style.pointerEvents = 'none';
+    });
+
+    document.addEventListener('mousemove', (e) => {
+        if (!isResizing) return;
+        let newWidth = (e.clientX / window.innerWidth) * 100;
+        if (newWidth < 20) newWidth = 20; 
+        if (newWidth > 80) newWidth = 80; 
+        leftPane.style.width = `${newWidth}%`;
+    });
+
+    document.addEventListener('mouseup', () => {
+        isResizing = false;
+        document.body.style.cursor = 'default';
+        leftPane.style.userSelect = 'auto';
+        leftPane.style.pointerEvents = 'auto';
+    });
+
+    /* =========================================================================
+       Data Loading & Highlighting
+       ========================================================================= */
     let currentQuestion = null;
     
     function loadRandomQuestion() {
-        if (!typeof ASSESSMENT_QUESTIONS !== 'undefined' && ASSESSMENT_QUESTIONS.length > 0) {
+        if (typeof ASSESSMENT_QUESTIONS !== 'undefined' && ASSESSMENT_QUESTIONS.length > 0) {
             const randomIndex = Math.floor(Math.random() * ASSESSMENT_QUESTIONS.length);
             currentQuestion = ASSESSMENT_QUESTIONS[randomIndex];
             
-            document.getElementById('questionId').innerText = "ID: " + currentQuestion.id;
+            document.getElementById('questionId').innerText = "Task ID: " + currentQuestion.id;
             document.getElementById('displayPrompt').innerText = currentQuestion.prompt;
-            document.getElementById('displayCode').innerText = currentQuestion.code;
+            
+            const codeBlock = document.getElementById('displayCode');
+            codeBlock.textContent = currentQuestion.code;
+            Prism.highlightElement(codeBlock);
+
             document.getElementById('displaySolution').innerHTML = currentQuestion.solution_html;
         } else {
             document.getElementById('displayPrompt').innerText = "Error: No questions found. Run build.py first.";
         }
     }
 
-    // 2. 타이머 로직
+    /* =========================================================================
+       Timer Logic
+       ========================================================================= */
     const TIME_LIMIT_MINUTES = 20;
     let timeRemaining = TIME_LIMIT_MINUTES * 60;
     let timerInterval;
@@ -163,20 +333,26 @@
         timeRemaining--;
         document.getElementById('timeDisplay').innerText = formatTime(timeRemaining);
 
-        if (timeRemaining === 300) document.getElementById('timerBox').classList.add('warning');
+        if (timeRemaining === 300) {
+            document.getElementById('timerBox').classList.add('timer-warning');
+        }
         if (timeRemaining <= 0) forceSubmit();
     }
 
-    // 3. 제출 및 결과 공개
     function forceSubmit() {
         if (isSubmitted) return;
         submitAssessment();
         document.getElementById('timeDisplay').innerText = "00:00";
-        document.getElementById('timerBox').innerHTML = "🛑 TIME IS UP";
-        document.getElementById('solutionHeader').innerText = "🛑 TIME IS UP - Standard Solution";
-        document.getElementById('solutionHeader').style.color = "var(--danger-color)";
+        const timerBox = document.getElementById('timerBox');
+        timerBox.className = "flex items-center gap-2 border border-red-400 bg-red-50 text-red-600 dark:border-red-500/50 dark:bg-red-900/20 dark:text-red-400 px-4 py-1.5 rounded-full font-mono text-sm font-bold shadow-sm";
+        document.getElementById('solutionHeader').innerHTML = "🛑 TIME IS UP - Standard Solution";
+        document.getElementById('solutionHeader').classList.add('text-red-600', 'dark:text-red-400');
+        document.getElementById('solutionHeader').classList.remove('text-purple-700', 'dark:text-purple-400');
     }
 
+    /* =========================================================================
+       Submission Logic
+       ========================================================================= */
     async function submitAssessment() {
         if (isSubmitted) return;
         isSubmitted = true;
@@ -186,17 +362,28 @@
         const q2Text = document.getElementById('q2').value;
         const q3Text = document.getElementById('q3').value;
 
-        ['q1', 'q2', 'q3'].forEach(id => document.getElementById(id).disabled = true);
+        ['q1', 'q2', 'q3'].forEach(id => {
+            const el = document.getElementById(id);
+            el.disabled = true;
+            el.classList.add('opacity-50', 'cursor-not-allowed', 'bg-gray-100', 'dark:bg-gray-800');
+        });
         
-        const btn = document.querySelector('.btn-submit');
+        const btn = document.getElementById('submitBtn');
         btn.disabled = true;
         btn.innerText = "Evaluated";
-        btn.style.backgroundColor = "var(--border-color)";
+        btn.className = "ml-auto bg-gray-300 text-gray-500 dark:bg-gray-700 dark:text-gray-400 px-6 py-2.5 rounded-lg font-semibold cursor-not-allowed transition-colors duration-200";
 
-        document.getElementById('solutionPanel').classList.add('visible');
-        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+        const solutionPanel = document.getElementById('solutionPanel');
+        solutionPanel.classList.remove('hidden');
+        
+        // Highlight code inside the solution panel if any
+        solutionPanel.querySelectorAll('pre code').forEach((block) => {
+            Prism.highlightElement(block);
+        });
 
-        // Save to Cloudflare D1 via API
+        const rightPane = document.getElementById('rightPane');
+        rightPane.scrollTo({ top: rightPane.scrollHeight, behavior: 'smooth' });
+
         try {
             const payload = {
                 questionId: currentQuestion ? currentQuestion.id : "unknown",
@@ -214,8 +401,8 @@
 
             if (response.ok) {
                 const statusSpan = document.getElementById('saveStatus');
-                statusSpan.style.display = "inline";
-                setTimeout(() => { statusSpan.style.display = "none"; }, 3000);
+                statusSpan.classList.remove('hidden');
+                setTimeout(() => { statusSpan.classList.add('hidden'); }, 3000);
             } else {
                 console.error("Failed to save to D1", await response.text());
             }
@@ -224,7 +411,7 @@
         }
     }
 
-    // 초기화
+    // Initialize
     window.onload = function() {
         loadRandomQuestion();
         document.getElementById('timeDisplay').innerText = formatTime(timeRemaining);
