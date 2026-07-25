@@ -26,7 +26,35 @@ jobs:
         if [ -f dsa_training/requirements.txt ]; then pip install -r dsa_training/requirements.txt; fi
         pip install pytest pytest-cov
 
-    - name: Test with pytest
+    - name: Test completed problems only
       run: |
         cd dsa_training
-        pytest
+        
+        # Extract folder names from COMPLETED_TASKS.txt
+        # e.g., "... Completed daily algorithm: 06_merge_intervals" -> "06_merge_intervals"
+        if [ ! -f "COMPLETED_TASKS.txt" ]; then
+          echo "COMPLETED_TASKS.txt not found. Skipping tests."
+          exit 0
+        fi
+        
+        COMPLETED_DIRS=$(awk -F 'Completed daily algorithm: ' '{if ($2 != "") print $2}' COMPLETED_TASKS.txt | tr -d '\r')
+        
+        if [ -z "$COMPLETED_DIRS" ]; then
+          echo "No completed tasks found. Skipping tests."
+          exit 0
+        fi
+        
+        # Collect valid directories to test
+        TEST_ARGS=""
+        for dir in $COMPLETED_DIRS; do
+          if [ -d "$dir" ]; then
+            TEST_ARGS="$TEST_ARGS $dir"
+          fi
+        done
+        
+        if [ -n "$TEST_ARGS" ]; then
+          echo "Running tests for completed tasks: $TEST_ARGS"
+          pytest $TEST_ARGS
+        else
+          echo "Valid completed task directories not found. Skipping tests."
+        fi

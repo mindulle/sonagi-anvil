@@ -53,7 +53,7 @@ def submit():
     print(f"🧪 '{problem_name}' 테스트 코드를 실행합니다...\n")
     
     # Run pytest
-    result = subprocess.run(["pytest", f"{problem_name}/"], capture_output=True, text=True)
+    result = subprocess.run(["python3", "-m", "pytest", f"{problem_name}/"], capture_output=True, text=True)
     passed = result.returncode == 0
     
     # Load metadata

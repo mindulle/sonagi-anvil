@@ -20,7 +20,7 @@ The output MUST be in the following strict JSON format, without any markdown for
   "test_code": "import pytest\nfrom snake_case_problem_name import Solution\n...",
   "categories": ["Array", "Dynamic Programming"],
   "difficulty": "Medium"
-}
+}}
 
 Requirements:
 1. skeleton_code: Contains the class/method definition and a docstring, with `# TODO: Implement` and `pass`.
@@ -104,10 +104,10 @@ def main():
             "difficulty": data.get("difficulty", "Unknown")
         }, f, indent=2)
         
-    # Copy to templates
-    os.system(f"cp {py_path} {os.path.join(template_dir, data['file_name'])}")
-    os.system(f"cp {test_path} {os.path.join(template_dir, f'test_{data['file_name']}')}")
-    os.system(f"cp {meta_path} {os.path.join(template_dir, 'meta.json')}")
+    import shutil
+    shutil.copy(py_path, os.path.join(template_dir, data['file_name']))
+    shutil.copy(test_path, os.path.join(template_dir, f"test_{data['file_name']}"))
+    shutil.copy(meta_path, os.path.join(template_dir, 'meta.json'))
     
     print(f"✅ Successfully created '{folder_name}'!")
     print(f"📁 Logic file: {py_path}")

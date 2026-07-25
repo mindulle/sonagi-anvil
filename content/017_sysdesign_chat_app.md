@@ -1,7 +1,7 @@
 # Prompt
 "WhatsApp과 같은 실시간 채팅 앱의 백엔드를 설계해주세요. 사용자는 메시지를 보내고 지연 없이 수신해야 합니다."
 
-# Buggy Response
+# Buggy Code
 (모델의 답변 요약)
 "사용자는 REST API 엔드포인트 `POST /messages`를 통해 메시지를 서버에 보냅니다. 다른 사용자들은 매초마다 `GET /messages`를 호출하는 HTTP Polling 방식을 사용하여 새로운 메시지가 있는지 확인하고 화면을 업데이트합니다."
 
