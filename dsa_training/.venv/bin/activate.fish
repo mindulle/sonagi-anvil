@@ -1,5 +1,5 @@
 # This file must be used with "source <venv>/bin/activate.fish" *from fish*
-# (https://fishshell.com/). You cannot run it directly.
+# (https://fishshell.com/); you cannot run it directly.
 
 function deactivate  -d "Exit virtual environment and return to normal shell environment"
     # reset old environment variables
@@ -33,7 +33,7 @@ end
 # Unset irrelevant variables.
 deactivate nondestructive
 
-set -gx VIRTUAL_ENV /home/mindulle/projects/sonagi-anvil/dsa_training/.venv
+set -gx VIRTUAL_ENV /home/ubuntu/.paperclip/instances/default/projects/3fa0dfa2-9f91-4002-8012-ac598bbb4761/1e0832b3-64d4-4311-b1af-1df5eaecf55f/sonagi-anvil/dsa_training/.venv
 
 set -gx _OLD_VIRTUAL_PATH $PATH
 set -gx PATH "$VIRTUAL_ENV/"bin $PATH

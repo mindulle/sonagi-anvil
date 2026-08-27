@@ -40,3 +40,4 @@
 40: 40: 40: 40: 40: 40: 40: 40: 40: 40: 40: 40: 40: 40: 40: 40: Completed daily algorithm: 35_valid_anagram
 41: 41: 41: 41: 41: 41: 41: 41: 41: 41: 41: 41: 41: 41: 41: 41: Completed daily algorithm: 36_valid_sudoku
 42: 42: 42: 42: 42: 42: 42: 42: 42: 42: 42: 42: 42: 42: 42: 42: Completed daily algorithm: 40_maximum_depth_of_binary_tree
+45: 45: 45: 45: 45: 45: 45: 45: 45: 45: 45: 45: 45: 45: 45: 45: Completed daily algorithm: 45_word_search
