@@ -6,16 +6,40 @@ const ASSESSMENT_QUESTIONS = [
     "solution_html": "<h3>1. Space Complexity</h3><br><strong>문제점:</strong> 슬라이싱(<code>nums[n-k:] + nums[:n-k]</code>)은 새로운 배열을 생성하므로 $O(n)$ 공간을 사용합니다. 문제의 의도가 $O(1)$ 추가 공간 사용이라면 이 방식은 개선이 필요합니다.<br><strong>수정:</strong> <strong>Reversal Approach(역순 알고리즘)</strong>를 사용합니다.<br>1. 전체 배열을 뒤집습니다.<br>2. 처음 k개 요소를 뒤집습니다.<br>3. 나머지 n-k개 요소를 뒤집습니다.<br>이 방식은 추가 공간 없이 $O(1)$ 공간 복잡도로 해결할 수 있습니다."
   },
   {
+    "id": "025_mutable_default_argument",
+    "prompt": "Appends a value to a list. If no list is provided, it should create a new one.\nHowever, the current implementation has a bug related to mutable default arguments.\nFix the implementation.",
+    "code": "class Solution:\n    def append_to_list(self, val, lst=[]):\n        lst.append(val)\n        return lst",
+    "solution_html": "<code></code>`python<br>class Solution:<br>    def append_to_list(self, val, lst=None):<br>        if lst is None:<br>            lst = []<br>        lst.append(val)<br>        return lst<br><code></code>`"
+  },
+  {
     "id": "023_linked_list_cycle",
     "prompt": "\"Given head, the head of a linked list, determine if the linked list has a cycle in it. Aim for O(1) space.\"",
     "code": "def hasCycle(head: ListNode) -> bool:\n    visited = set()\n    current = head\n    while current:\n        if current in visited:\n            return True\n        visited.add(current)\n        current = current.next\n    return False",
     "solution_html": "<h3>1. Space Complexity</h3><br><strong>문제점:</strong> 해시셋(<code>visited</code>)을 사용하여 방문한 노드를 저장하면 노드의 개수만큼 메모리가 사용되므로 공간 복잡도가 $O(n)$이 됩니다.<br><strong>수정:</strong> <strong>Floyd's Cycle-Finding Algorithm (Tortoise and Hare)</strong>을 사용합니다.<br>- <code>slow</code> 포인터와 <code>fast</code> 포인터를 둡니다.<br>- <code>slow</code>는 한 칸씩, <code>fast</code>는 두 칸씩 이동합니다.<br>- 사이클이 있다면 <code>fast</code>가 <code>slow</code>를 따라잡게 됩니다.<br>이 방식은 추가적인 자료구조를 사용하지 않아 공간 복잡도가 $O(1)$입니다."
   },
   {
+    "id": "030_longest_increasing_subsequence",
+    "prompt": "Given an integer array `nums`, return the length of the longest strictly increasing subsequence.",
+    "code": "def lengthOfLIS(nums: list[int]) -> int:\n    if not nums:\n        return 0\n    \n    dp = [0] * len(nums)\n    for i in range(len(nums)):\n        for j in range(i):\n            if nums[j] < nums[i]:\n                dp[i] = max(dp[i], dp[j] + 1)\n    \n    return max(dp)",
+    "solution_html": "<h3>1. Logic Bug (치명적인 논리 오류)</h3><br><strong>문제점:</strong> <code>dp</code> 배열을 <code>1</code>로 초기화해야 합니다. 현재 코드는 <code>0</code>으로 초기화되어 있어, 아무것도 증가하지 않는 경우(본인만 있는 경우) 길이를 0으로 반환하는 버그가 있습니다.<br><br><h3>2. Complexity (시간 복잡도)</h3><br><strong>현재:</strong> 이중 for문을 사용하므로 <strong>O(N²)</strong> Time Complexity를 가집니다.<br><strong>최적화:</strong> <code>bisect</code> 모듈을 사용한 <strong>O(N log N)</strong> 알고리즘이 가능합니다.<br><br><h3>3. Ideal English Feedback</h3><br>\"The model's code has a logic bug: it initializes the <code>dp</code> array with <code>0</code> instead of <code>1</code>. This incorrectly reports the length as <code>0</code> for sequences of length 1. It should be initialized with <code>1</code> because every element is a subsequence of length 1.<br>Additionally, the solution uses an O(N²) approach, which can be optimized to O(N log N) using binary search (patience sorting).\""
+  },
+  {
+    "id": "028_dp_vs_greedy",
+    "prompt": "Find the minimum number of coins that make up the given amount.\nA greedy approach may not work, so use Dynamic Programming.",
+    "code": "class Solution:\n    def coinChange(self, coins: List[int], amount: int) -> int:\n        coins.sort(reverse=True)\n        count = 0\n        for coin in coins:\n            count += amount // coin\n            amount %= coin\n        return count if amount == 0 else -1",
+    "solution_html": "<code></code>`python<br>class Solution:<br>    def coinChange(self, coins: List[int], amount: int) -> int:<br>        dp = [float('inf')] * (amount + 1)<br>        dp[0] = 0<br>        for coin in coins:<br>            for i in range(coin, amount + 1):<br>                dp[i] = min(dp[i], dp[i - coin] + 1)<br>        return dp[amount] if dp[amount] != float('inf') else -1<br><code></code>`"
+  },
+  {
     "id": "016_sysdesign_url_shortener",
     "prompt": "\"초당 1,000개의 URL을 단축해야 하는 URL Shortener 서비스(예: bit.ly)의 아키텍처를 설계해줘. 데이터베이스 선택과 핵심 단축 알고리즘을 포함해야 해.\"",
     "code": "(모델의 답변 요약)\n\"데이터베이스로 관계형 DB(MySQL)를 사용하고, 사용자가 긴 URL을 입력하면 MD5 해시 함수를 사용하여 URL을 해싱한 뒤 앞 7자리를 잘라서 단축 URL 키로 사용합니다. 충돌이 발생하면 다시 해싱합니다.\"",
     "solution_html": "<h3>1. Algorithm Flaw (Hash Collision & Performance)</h3><br><strong>문제점:</strong> MD5 해시의 앞 7자리를 자르는 방식은 충돌(Collision) 확률이 높습니다. 충돌 시마다 DB에 쿼리를 던져 확인하고 다시 해싱하는 구조는 초당 1,000개의 쓰기 요청(TPS 1000)을 처리할 때 막대한 DB 부하를 유발합니다.<br><strong>수정:</strong> <code>Base62</code> 인코딩과 분산 ID 생성기(예: Twitter Snowflake, 혹은 RDBMS의 Auto-increment ID를 활용한 Base62 변환), 또는 사전에 키를 생성해두는 Key Generation Service (KGS)와 ZooKeeper 조합을 제안하는 것이 모범 답안입니다.<br><br><h3>2. Database Choice (Read/Write Heavy)</h3><br><strong>문제점:</strong> 단축 URL 서비스는 Read Heavy(보통 Read:Write = 10:1) 시스템입니다. MySQL 하나만 제안하기보다는, 빠른 리디렉션을 위해 Redis/Memcached 같은 캐시 레이어 도입이 필수적으로 언급되어야 합니다."
+  },
+  {
+    "id": "032_sliding_window_maximum",
+    "prompt": "Given an array `nums`, there is a sliding window of size `k` which is moving from the very left of the array to the very right. You can only see the `k` numbers in the window. Return the max sliding window.",
+    "code": "def maxSlidingWindow(nums, k):\n    res = []\n    for i in range(len(nums) - k + 1):\n        res.append(max(nums[i:i+k]))\n    return res",
+    "solution_html": "<h3>1. Logic Bug (성능 오류)</h3><br><strong>문제점:</strong> 이 코드는 논리적으로는 맞지만, 매 윈도우마다 <code>max()</code> 함수를 호출하여 O(N*k)의 시간 복잡도를 가집니다. k가 클 경우 매우 비효율적입니다.<br><strong>수정:</strong> Monotonic Deque(단조 큐)를 사용하여 각 요소를 한 번씩만 추가/제거함으로써 <strong>O(N)</strong> 시간 복잡도로 최적화해야 합니다.<br><br><h3>2. Complexity (시간 복잡도)</h3><br><strong>현재:</strong> O(N*k) - 윈도우마다 <code>max()</code> 수행.<br><strong>최적화:</strong> O(N) - Monotonic Deque 사용.<br><br><h3>3. Ideal English Feedback</h3><br>\"The model's implementation uses a naive O(N*k) approach by calling <code>max()</code> on each window. While functionally correct, this is highly inefficient for large values of <code>k</code>.<br>The optimal solution should utilize a monotonic deque to maintain indices of elements in the current window in decreasing order. This allows finding the maximum in constant time, reducing the overall time complexity to O(N).\""
   },
   {
     "id": "021_group_anagrams",
@@ -48,16 +72,34 @@ const ASSESSMENT_QUESTIONS = [
     "solution_html": "<h3>1. SQL Standard Violation (GROUP BY 에러)</h3><br><strong>문제점:</strong> 대부분의 모던 RDBMS(PostgreSQL, SQL Server 등)에서는 <code>GROUP BY</code> 절에 포함되지 않은 일반 컬럼(<code>name</code>)을 SELECT 절에서 집계 함수 없이 사용할 수 없습니다. (MySQL의 특정 설정에서는 동작할 수 있으나 표준이 아닙니다.)<br><strong>수정:</strong> <code>RANK()</code> 또는 <code>ROW_NUMBER()</code> 같은 윈도우 함수(Window Function)를 사용하거나 서브쿼리 조인을 통해 해결해야 합니다.<br><br><h3>2. Ideal English Feedback</h3><br>\"The generated SQL is invalid in standard RDBMS like PostgreSQL or SQL Server. You cannot select the <code>name</code> column without including it in the <code>GROUP BY</code> clause or wrapping it in an aggregate function. To find the employee with the highest salary per department, you should use a window function like <code>RANK() OVER (PARTITION BY department_id ORDER BY salary DESC)</code> or use a subquery to join the max salaries back to the original table.\""
   },
   {
+    "id": "026_binary_search_overflow",
+    "prompt": "Implement binary search. \nMake sure the midpoint calculation prevents integer overflow \n(e.g., in languages with limits, though Python handles arbitrarily large ints, \nsimulate the safe mid calculation left + (right - left) // 2).",
+    "code": "class Solution:\n    def search(self, nums: List[int], target: int) -> int:\n        left, right = 0, len(nums) - 1\n        while left <= right:\n            mid = (left + right) // 2\n            if nums[mid] == target:\n                return mid\n            elif nums[mid] < target:\n                left = mid + 1\n            else:\n                right = mid - 1\n        return -1",
+    "solution_html": "<code></code>`python<br>class Solution:<br>    def search(self, nums: List[int], target: int) -> int:<br>        left, right = 0, len(nums) - 1<br>        while left <= right:<br>            mid = left + (right - left) // 2<br>            if nums[mid] == target:<br>                return mid<br>            elif nums[mid] < target:<br>                left = mid + 1<br>            else:<br>                right = mid - 1<br>        return -1<br><code></code>`"
+  },
+  {
     "id": "012_rate_limiter_race_condition",
     "prompt": "\"Redis를 사용하는 간단한 API Rate Limiter를 작성해주세요. 사용자 ID당 분당 100회로 제한합니다.\"",
     "code": "def is_allowed(user_id, redis_client):\n    key = f\"rate_limit:{user_id}\"\n    requests = redis_client.get(key)\n    if requests is None:\n        redis_client.set(key, 1, ex=60)\n        return True\n    if int(requests) >= 100:\n        return False\n    redis_client.incr(key)\n    return True",
     "solution_html": "<h3>1. Race Condition (동시성 오류)</h3><br><strong>문제점:</strong> <code>.get()</code> 과 <code>.incr()</code> 사이에 원자성(Atomicity)이 보장되지 않습니다. 두 스레드가 동시에 <code>get</code>을 호출하여 99를 읽으면 둘 다 <code>incr</code>을 실행해 실제로는 101번의 요청이 허용될 수 있습니다.<br><strong>수정:</strong> Redis의 <code>INCR</code> 명령어를 먼저 사용하고, 반환값이 1일 때 <code>EXPIRE</code>를 설정하는 방식이 원자적이며 안전합니다. 또는 Lua 스크립트를 사용해야 합니다."
   },
   {
+    "id": "029_dfs_visit_states",
+    "prompt": "Return true if you can finish all courses, else false.\nThis is a cycle detection problem in a directed graph.",
+    "code": "class Solution:\n    def canFinish(self, numCourses: int, prerequisites: List[List[int]]) -> bool:\n        graph = [[] for _ in range(numCourses)]\n        for dest, src in prerequisites:\n            graph[src].append(dest)\n        \n        visited = [False] * numCourses\n        \n        def dfs(node):\n            if visited[node]:\n                return True\n            visited[node] = True\n            for neighbor in graph[node]:\n                if dfs(neighbor):\n                    return True\n            visited[node] = False\n            return False\n        \n        for i in range(numCourses):\n            if dfs(i):\n                return False\n        return True",
+    "solution_html": "<code></code>`python<br>class Solution:<br>    def canFinish(self, numCourses: int, prerequisites: List[List[int]]) -> bool:<br>        graph = [[] for _ in range(numCourses)]<br>        for dest, src in prerequisites:<br>            graph[src].append(dest)<br>        <br>        # 0: unvisited, 1: visiting, 2: visited<br>        state = [0] * numCourses<br>        <br>        def has_cycle(node):<br>            if state[node] == 1:<br>                return True<br>            if state[node] == 2:<br>                return False<br>            <br>            state[node] = 1<br>            for neighbor in graph[node]:<br>                if has_cycle(neighbor):<br>                    return True<br>            state[node] = 2<br>            return False<br>            <br>        for i in range(numCourses):<br>            if has_cycle(i):<br>                return False<br>        return True<br><code></code>`"
+  },
+  {
     "id": "018_sysdesign_url_shortener",
     "prompt": "\"URL 단축 서비스를 설계해주세요. 긴 URL을 받아서 짧은 URL로 변환하고, 사용자가 짧은 URL에 접속하면 원래의 긴 URL로 리다이렉트되어야 합니다.\"",
     "code": "(모델의 답변 요약)\n\"데이터베이스의 기본 키를 기반으로 URL을 해싱하여 짧은 문자열을 만듭니다. MD5 해싱 알고리즘을 사용하고, 해시된 문자열을 DB의 짧은 URL 컬럼에 저장합니다. 모든 검색은 DB 인덱스를 통해 수행됩니다.\"",
     "solution_html": "<h3>1. Collisions with Hashing</h3><br><strong>문제점:</strong> MD5와 같은 알고리즘을 단순 사용하면 대규모 서비스에서 해시 충돌(Collision)이 빈번하게 발생할 수 있습니다.<br><strong>수정:</strong> <strong>Base62 인코딩</strong>과 결합된 분산 ID 생성 서비스(예: Snowflake)를 사용하여 고유성을 보장해야 합니다.<br><br><h3>2. Read-Heavy Optimization</h3><br><strong>문제점:</strong> 리다이렉트(Read)가 URL 단축(Write)보다 훨씬 빈번한 Read-Heavy 환경입니다.<br><strong>수정:</strong> <strong>Redis</strong>와 같은 캐싱 레이어를 필수로 도입하여, DB를 직접 조회하지 않고도 즉시 URL을 반환할 수 있도록 설계해야 합니다."
+  },
+  {
+    "id": "024_merge_sorted_array",
+    "prompt": "\"두 개의 정렬된 정수 배열 `nums1`과 `nums2`가 주어집니다. `nums1`의 크기는 `m+n`이고 `nums2`의 크기는 `n`입니다. `nums1`과 `nums2`를 합쳐서 `nums1` 하나로 정렬된 상태로 만들어줘. 추가 배열을 생성하지 말고 `nums1`을 직접 수정(in-place)해야 해.\"",
+    "code": "def merge(nums1, m, nums2, n):\n    # 단순히 nums2를 nums1 뒤에 붙이고 정렬하는 방식\n    for i in range(n):\n        nums1[m + i] = nums2[i]\n    nums1.sort()",
+    "solution_html": "<h3>1. Complexity (시간 복잡도)</h3><br><strong>현재:</strong> <code>nums1.sort()</code>를 사용하므로 <strong>O((M+N)log(M+N))</strong> Time Complexity를 가집니다.<br><strong>최적화:</strong> 두 배열이 이미 정렬되어 있다는 점을 활용하여 뒤에서부터 채워 넣는 3-pointer 방식을 사용하면 <strong>O(M+N)</strong> Time Complexity로 해결할 수 있습니다.<br><br><h3>2. Implementation (구현 방법)</h3><br>1. <code>nums1</code>의 마지막 유효 요소(<code>p1 = m - 1</code>)와 <code>nums2</code>의 마지막 요소(<code>p2 = n - 1</code>)를 가리키는 포인터를 만듭니다.<br>2. <code>nums1</code>의 마지막 위치(<code>p = m + n - 1</code>)부터 두 포인터가 가리키는 값을 비교하여 더 큰 값을 채워 넣습니다.<br><br><h3>3. Ideal English Feedback</h3><br>\"The current solution uses <code>nums1.sort()</code>, which is inefficient with a time complexity of O((M+N)log(M+N)). Since both arrays are already sorted, you can achieve O(M+N) time complexity by using a three-pointer approach. Start filling <code>nums1</code> from the end (index <code>m+n-1</code>) by comparing elements from the end of <code>nums1</code> and <code>nums2</code> and moving backwards. This avoids unnecessary sorting and extra space.\""
   },
   {
     "id": "002_valid_palindrome",
@@ -106,6 +148,18 @@ const ASSESSMENT_QUESTIONS = [
     "prompt": "\"수강해야 하는 총 코스 수 `numCourses`와 선수 과목 쌍 배열 `prerequisites`가 주어집니다. `prerequisites[i] = [a, b]`는 코스 `a`를 듣기 위해서는 코스 `b`를 먼저 들어야 한다는 뜻입니다. 모든 코스를 수강할 수 있으면 `true`, 아니면 `false`를 반환하는 파이썬 함수를 만들어줘.\"",
     "code": "def canFinish(numCourses, prerequisites):\n    graph = {i: [] for i in range(numCourses)}\n    for course, pre in prerequisites:\n        graph[course].append(pre)\n        \n    visited = set()\n    \n    def dfs(course):\n        if course in visited:\n            return False\n        \n        if not graph[course]:\n            return True\n            \n        visited.add(course)\n        for pre in graph[course]:\n            if not dfs(pre):\n                return False\n        visited.remove(course)\n        graph[course] = []\n        return True\n        \n    for i in range(numCourses):\n        if not dfs(i):\n            return False\n            \n    return True",
     "solution_html": "<h3>1. Performance / Time Limit Exceeded (중복 방문)</h3><br><strong>문제점:</strong> 모델은 DFS를 이용해 사이클(Cycle)을 탐지하려고 했습니다. 그러나 <code>visited.remove(course)</code>를 호출하는 방식은 백트래킹(Backtracking)이지, <strong>위상 정렬(Topological Sort)</strong>이나 그래프 사이클 검출을 위한 올바른 상태 추적이 아닙니다. 이 방식은 이미 성공적으로 검증된 경로를 다른 노드에서 재방문할 때 다시 연산하게 만들어 <strong>O(V * E)</strong> 또는 최악의 경우 지수 시간복잡도를 유발하여 Time Limit Exceeded (TLE)가 발생할 수 있습니다.<br><strong>수정:</strong> 노드의 상태를 3가지로 나누어야 합니다: <code>0</code> (미방문), <code>1</code> (방문 중 - 현재 탐색 경로에 있음), <code>2</code> (방문 완료 - 사이클 없음이 확정됨). 상태를 추적하는 배열이나 딕셔너리를 사용하여 중복 탐색을 막아야 합니다.<br><br><h3>2. Logic (부분적인 불완전성)</h3><br><strong>문제점:</strong> 이 코드는 운 좋게도 그래프가 트리 형태에 가깝고 작을 때는 동작하며, <code>graph[course] = []</code> 처리로 일부 중복 방문을 막으려 한 흔적이 보입니다. 그러나 완전히 방문이 끝난 노드(안전한 노드)를 표시하는 명시적 방법(Memoization)이 없어 불완전합니다.<br><br><h3>3. Ideal English Feedback</h3><br>\"The model's DFS implementation for cycle detection is inefficient and prone to a Time Limit Exceeded (TLE) error on large, complex graphs. The use of a single <code>visited</code> set where nodes are added and then removed (<code>visited.remove(course)</code>) acts like backtracking, meaning nodes might be redundantly evaluated multiple times across different paths. Although the model attempts a small optimization by clearing the adjacency list (<code>graph[course] = []</code>), a proper topological sort via DFS requires keeping track of three distinct states: unvisited, currently visiting (to detect cycles), and fully visited/safe (to avoid redundant checks). The time complexity should be strictly O(V + E).\""
+  },
+  {
+    "id": "027_kadanes_negative",
+    "prompt": "Implement Kadane's Algorithm to find the maximum subarray sum.\nThe algorithm should handle cases where all numbers are negative.",
+    "code": "class Solution:\n    def maxSubArray(self, nums: List[int]) -> int:\n        max_sum = 0\n        current_sum = 0\n        for num in nums:\n            current_sum += num\n            if current_sum < 0:\n                current_sum = 0\n            if current_sum > max_sum:\n                max_sum = current_sum\n        return max_sum",
+    "solution_html": "<code></code>`python<br>class Solution:<br>    def maxSubArray(self, nums: List[int]) -> int:<br>        max_sum = nums[0]<br>        current_sum = nums[0]<br>        for num in nums[1:]:<br>            current_sum = max(num, current_sum + num)<br>            max_sum = max(max_sum, current_sum)<br>        return max_sum<br><code></code>`"
+  },
+  {
+    "id": "031_3sum",
+    "prompt": "Given an integer array `nums`, return all the triplets `[nums[i], nums[j], nums[k]]` such that `i != j`, `i != k`, and `j != k`, and `nums[i] + nums[j] + nums[k] == 0`.",
+    "code": "def three_sum(nums):\n    res = []\n    for i in range(len(nums)):\n        for j in range(i + 1, len(nums)):\n            for k in range(j + 1, len(nums)):\n                if nums[i] + nums[j] + nums[k] == 0:\n                    res.append([nums[i], nums[j], nums[k]])\n    return res",
+    "solution_html": "<h3>1. Logic Bug (치명적인 논리 오류)</h3><br><strong>문제점:</strong> 이 코드는 중복된 트리플렛을 제거하지 않습니다. 예: <code>[-1, 0, 1, 2, -1, -4]</code> 일 때 <code>[-1, 0, 1]</code>이 여러 번 나올 수 있습니다.<br><strong>수정:</strong> 정렬 후 Two Pointers 기법을 사용하거나, 결과 세트를 <code>set</code>으로 처리해야 합니다.<br><br><h3>2. Complexity (시간 복잡도)</h3><br><strong>현재:</strong> 3중 for문을 사용하므로 <strong>O(N³)</strong> Time Complexity를 가집니다.<br><strong>최적화:</strong> 정렬 후 Two Pointers를 사용하여 <strong>O(N²)</strong>로 줄일 수 있습니다.<br><br><h3>3. Ideal English Feedback</h3><br>\"The model's code is highly inefficient, using a triple-nested loop which results in O(N³) time complexity. It also fails to handle duplicate triplets, which is a key requirement of the 3Sum problem.<br>The solution should first sort the array and then use a fixed element with a two-pointer approach to find the remaining two numbers. This optimized approach reduces the time complexity to O(N²), and adding checks for duplicates ensures unique results are returned.\""
   },
   {
     "id": "013_pandas_chained_assignment",

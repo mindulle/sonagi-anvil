@@ -1,24 +1,43 @@
-1: 1: 1: 1: 1: 1: 1: Completed daily algorithm: 06_merge_intervals
-2: 2: 2: 2: 2: 2: 2: Completed daily algorithm: 07_max_subarray
-3: 3: 3: 3: 3: 3: 3: Completed daily algorithm: 08_course_schedule
-4: 4: 4: 4: 4: 4: 4: Completed daily algorithm: 09_coin_change
-5: 5: 5: 5: 5: 5: 5: Completed daily algorithm: 05_container_with_most_water
-6: 6: 6: 6: 6: 6: 6: Completed daily algorithm: 01_two_sum
-7: 7: 7: 7: 7: 7: 7: Completed daily algorithm: 02_valid_parentheses
-8: 8: 8: 8: 8: 8: 8: Completed daily algorithm: 03_lru_cache
-9: 9: 9: 9: 9: 9: 9: Completed daily algorithm: 04_number_of_islands
-10: 10: 10: 10: 10: 10: 10: Completed daily algorithm: 10_valid_palindrome
-11: 11: 11: 11: 11: 11: 11: Completed daily algorithm: 11_fibonacci_memoization
-12: 12: 12: 12: 12: 12: 12: Completed daily algorithm: 12_product_of_array_except_self
-13: 13: 13: 13: 13: 13: Completed daily algorithm: 13_binary_search_loop
-14: 14: 14: 14: 14: 14: Completed daily algorithm: 14_climbing_stairs
-15: 15: 15: 15: 15: 15: Completed daily algorithm: 15_rate_limiter
-16: 16: 16: 16: 16: Completed daily algorithm: 16_top_k_frequent_elements
-17: 17: 17: 17: 17: Completed daily algorithm: 17_sysdesign_chat_app
-18: 18: 18: 18: 18: Completed daily algorithm: 18_sysdesign_url_shortener
-19: 19: 19: 19: 19: Completed daily algorithm: 19_binary_search_overflow
-20: 20: 20: 20: 20: 20: 20: 20: Completed daily algorithm: 20_longest_substring_without_repeating_characters
-21: 21: 21: 21: 21: 21: 21: 21: Completed daily algorithm: 21_group_anagrams
-22: 22: 22: 22: 22: 22: 22: 22: Completed daily algorithm: 22_rotate_array
-23: 23: 23: 23: 23: 23: 23: 23: Completed daily algorithm: 23_linked_list_cycle
-24: 24: 24: 24: 24: 24: 24: 24: Completed daily algorithm: 24_merge_sorted_array
+1: 1: 1: 1: 1: 1: 1: 1: 1: 1: 1: 1: 1: 1: 1: Completed daily algorithm: 06_merge_intervals
+2: 2: 2: 2: 2: 2: 2: 2: 2: 2: 2: 2: 2: 2: 2: Completed daily algorithm: 07_max_subarray
+3: 3: 3: 3: 3: 3: 3: 3: 3: 3: 3: 3: 3: 3: 3: Completed daily algorithm: 08_course_schedule
+4: 4: 4: 4: 4: 4: 4: 4: 4: 4: 4: 4: 4: 4: 4: Completed daily algorithm: 09_coin_change
+5: 5: 5: 5: 5: 5: 5: 5: 5: 5: 5: 5: 5: 5: 5: Completed daily algorithm: 05_container_with_most_water
+6: 6: 6: 6: 6: 6: 6: 6: 6: 6: 6: 6: 6: 6: 6: Completed daily algorithm: 01_two_sum
+7: 7: 7: 7: 7: 7: 7: 7: 7: 7: 7: 7: 7: 7: 7: Completed daily algorithm: 02_valid_parentheses
+8: 8: 8: 8: 8: 8: 8: 8: 8: 8: 8: 8: 8: 8: 8: Completed daily algorithm: 03_lru_cache
+9: 9: 9: 9: 9: 9: 9: 9: 9: 9: 9: 9: 9: 9: 9: Completed daily algorithm: 04_number_of_islands
+10: 10: 10: 10: 10: 10: 10: 10: 10: 10: 10: 10: 10: 10: 10: Completed daily algorithm: 10_valid_palindrome
+11: 11: 11: 11: 11: 11: 11: 11: 11: 11: 11: 11: 11: 11: 11: Completed daily algorithm: 11_fibonacci_memoization
+12: 12: 12: 12: 12: 12: 12: 12: 12: 12: 12: 12: 12: 12: 12: Completed daily algorithm: 12_product_of_array_except_self
+13: 13: 13: 13: 13: 13: 13: 13: 13: 13: 13: 13: 13: 13: Completed daily algorithm: 13_binary_search_loop
+14: 14: 14: 14: 14: 14: 14: 14: 14: 14: 14: 14: 14: 14: Completed daily algorithm: 14_climbing_stairs
+15: 15: 15: 15: 15: 15: 15: 15: 15: 15: 15: 15: 15: 15: Completed daily algorithm: 15_rate_limiter
+16: 16: 16: 16: 16: 16: 16: 16: 16: 16: 16: 16: 16: Completed daily algorithm: 16_top_k_frequent_elements
+17: 17: 17: 17: 17: 17: 17: 17: 17: 17: 17: 17: 17: Completed daily algorithm: 17_sysdesign_chat_app
+18: 18: 18: 18: 18: 18: 18: 18: 18: 18: 18: 18: 18: Completed daily algorithm: 18_sysdesign_url_shortener
+19: 19: 19: 19: 19: 19: 19: 19: 19: 19: 19: 19: 19: Completed daily algorithm: 19_binary_search_overflow
+20: 20: 20: 20: 20: 20: 20: 20: 20: 20: 20: 20: 20: 20: 20: 20: Completed daily algorithm: 20_longest_substring_without_repeating_characters
+21: 21: 21: 21: 21: 21: 21: 21: 21: 21: 21: 21: 21: 21: 21: 21: Completed daily algorithm: 21_group_anagrams
+22: 22: 22: 22: 22: 22: 22: 22: 22: 22: 22: 22: 22: 22: 22: 22: Completed daily algorithm: 22_rotate_array
+23: 23: 23: 23: 23: 23: 23: 23: 23: 23: 23: 23: 23: 23: 23: 23: Completed daily algorithm: 23_linked_list_cycle
+24: 24: 24: 24: 24: 24: 24: 24: 24: 24: 24: 24: 24: 24: 24: 24: Completed daily algorithm: 24_merge_sorted_array
+25: 25: 25: 25: 25: 25: 25: 25: 25: 25: 25: 25: 25: 25: 25: 25: Completed daily algorithm: 25_mutable_default_argument
+26: 26: 26: 26: 26: 26: 26: 26: 26: 26: 26: 26: 26: 26: 26: 26: Completed daily algorithm: 06_binary_search_overflow
+27: 27: 27: 27: 27: 27: 27: 27: 27: 27: 27: 27: 27: 27: 27: 27: Completed daily algorithm: 31_3sum
+28: 28: 28: 28: 28: 28: 28: 28: 28: 28: 28: 28: 28: 28: 28: 28: Completed daily algorithm: 32_sliding_window_maximum
+29: 29: 29: 29: 29: 29: 29: 29: 29: 29: 29: 29: 29: 29: 29: 29: Completed daily algorithm: 30_longest_increasing_subsequence
+30: 30: 30: 30: 30: 30: 30: 30: 30: 30: 30: 30: 30: 30: 30: 30: Completed daily algorithm: 05_python_mutable_default
+31: 31: 31: 31: 31: 31: 31: 31: 31: 31: 31: 31: 31: 31: 31: 31: Completed daily algorithm: 07_kadanes_negative
+32: 32: 32: 32: 32: 32: 32: 32: 32: 32: 32: 32: 32: 32: 32: 32: Completed daily algorithm: 08_coin_change_greedy_vs_dp
+33: 33: 33: 33: 33: 33: 33: 33: 33: 33: 33: 33: 33: 33: 33: 33: Completed daily algorithm: 09_dfs_topological_sort
+34: 34: 34: 34: 34: 34: 34: 34: 34: 34: 34: 34: 34: 34: 34: 34: Completed daily algorithm: 26_binary_search_overflow
+35: 35: 35: 35: 35: 35: 35: 35: 35: 35: 35: 35: 35: 35: 35: 35: Completed daily algorithm: 27_kadanes_negative
+36: 36: 36: 36: 36: 36: 36: 36: 36: 36: 36: 36: 36: 36: 36: 36: Completed daily algorithm: 28_dp_vs_greedy
+37: 37: 37: 37: 37: 37: 37: 37: 37: 37: 37: 37: 37: 37: 37: 37: Completed daily algorithm: 29_dfs_visit_states
+38: 38: 38: 38: 38: 38: 38: 38: 38: 38: 38: 38: 38: 38: 38: 38: Completed daily algorithm: 33_merge_k_sorted_lists
+39: 39: 39: 39: 39: 39: 39: 39: 39: 39: 39: 39: 39: 39: 39: 39: Completed daily algorithm: 34_search_in_rotated_sorted_array
+40: 40: 40: 40: 40: 40: 40: 40: 40: 40: 40: 40: 40: 40: 40: 40: Completed daily algorithm: 35_valid_anagram
+41: 41: 41: 41: 41: 41: 41: 41: 41: 41: 41: 41: 41: 41: 41: 41: Completed daily algorithm: 36_valid_sudoku
+42: 42: 42: 42: 42: 42: 42: 42: 42: 42: 42: 42: 42: 42: 42: 42: Completed daily algorithm: 40_maximum_depth_of_binary_tree
+45: 45: 45: 45: 45: 45: 45: 45: 45: 45: 45: 45: 45: 45: 45: 45: Completed daily algorithm: 45_word_search
