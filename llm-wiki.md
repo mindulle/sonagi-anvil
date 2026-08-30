@@ -1,0 +1,1 @@
+\n## 2026-08-30: Spiral Matrix Pattern\n- When doing boundary-shrinking traversals (like spiral matrix), always remember to check if boundaries have crossed `left <= right and top <= bottom` after updating boundaries midway through the loop to avoid redundant reads.
