@@ -1,0 +1,11 @@
+[pr_reviewer]
+extra_instructions = """
+이 레포지토리는 알고리즘/자료구조(DSA) 훈련소인 sonagi-anvil 입니다.
+- 제출된 알고리즘 문제 풀이 코드를 리뷰할 때, **시간 복잡도(Time Complexity)**와 **공간 복잡도(Space Complexity)**를 반드시 분석해주세요.
+- Edge Case(예외 상황)를 놓치지 않았는지 깐깐하게 리뷰해주세요.
+- 더 효율적인 풀이 방식이나 파이썬/자바스크립트의 내장 함수를 활용할 수 있는 더 우아한(Pythonic 등) 방법이 있다면 제안해주세요.
+- TDD 및 pytest/jest 기반의 테스트 코드가 누락되었는지 확인해주세요.
+"""
+
+[config]
+ignore_files = ["package-lock.json", "pnpm-lock.yaml", "yarn.lock", "poetry.lock"]
